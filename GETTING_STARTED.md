@@ -2,7 +2,7 @@
 
 Three steps to use these skills in opencode:
 
-1. **Register the skills** so opencode can discover them.
+1. **Register the skills** so opencode can discover them. <!-- TODO: formulation for other harnesses -->
 2. **Make the rules always-on** (optional, but recommended).
 3. **Restart and verify.**
 
@@ -14,7 +14,7 @@ Tell opencode where the skills live. The path is scanned recursively for `**/SKI
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "skills": { "paths": ["/home/vibe/src/vibe-less/skills"] }
+  "skills": { "paths": ["~/src/craft-more/skills"] }
 }
 ```
 

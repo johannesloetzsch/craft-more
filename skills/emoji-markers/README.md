@@ -2,8 +2,10 @@
 
 A conversational output protocol that prefixes each paragraph with a single status marker (emoji plus uppercase word marker).
 
-- **Purpose:** make the status of each paragraph immediately legible: plan, execution, report, warning, verification, blockage, decision, permission, scheduling, pinning, revisiting, cleanup.
-- **Maturity:** Mock — pending trigger test.
+- **Purpose:**
+  - make the status of each paragraph immediately legible
+  - define a precise vocabulary for building protocols via skills
+- **Maturity:** PoC
 - **Files:**
   - `README.md`: human-facing
   - `SKILL.md`: agent-facing

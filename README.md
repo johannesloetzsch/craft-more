@@ -1,4 +1,6 @@
-# vibe-less
+# craft-more
+
+**`slop less and vibe :) but craft more…`**
 
 **`slop-less && vibe|bat && craft|more`**
 
@@ -15,6 +17,11 @@ Idea: an animated morph `slop-less` ↔ `slop|less`, like a loading bar.
 - `plan-build-workflow` — Plan/build separation, approval flow, stay in the loop
 - `cost-budget-guardrails` — Token/permission budget, cheapest source first
 
+### Research
+- `environment-discovery` — Resource-efficient, non-intrusive environment probing
+- `web-research` — Research strategy: local-first, decision tree
+- `info-source-index` — Entry point: where to look first
+
 ### Learning loop
 - `maturity-model` — 0–5 maturity scale and labeling
 - `evaluation-report` — Report template, reflection and meta-learning
@@ -26,13 +33,8 @@ Idea: an animated morph `slop-less` ↔ `slop|less`, like a loading bar.
 - `skill-evolution` — Decide how an optimization maps to a skill
 - `workflow` — Meta-skill orchestrating the others
 
-### Research
-- `web-research` — Research strategy: local-first, decision tree
-- `info-source-index` — Entry point: where to look first
-- `environment-discovery` — Resource-efficient, non-intrusive environment probing
-
 ### Behavior & guardrails
-- `uncertainty-and-verification` — Confidence statements, verify before fix
+- `uncertainty-and-verification` — Verify whenever the actual purpose requires it
 - `step-sequencing` — Order steps for resource efficiency and interactivity
 - `interaction-guard` — Avoid long local loops; escalate to the user
 
@@ -48,7 +50,7 @@ Installation: see [`GETTING_STARTED.md`](GETTING_STARTED.md).
 <!-- TODO: filename for this configuration is missing, but as far as I know there is no generic solution for different harnesses. may want use the codencode config file? -->
 ```jsonc
 {
-  "skills": { "paths": ["/home/vibe/src/vibe-less/skills"] }
+  "skills": { "paths": ["~/src/craft-more/skills"] }
 }
 ```
 

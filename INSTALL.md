@@ -4,17 +4,20 @@ Detailed installation for opencode.
 
 ## Requirements
 
-- opencode (recent version).
+- opencode (recent version). <!-- or alternatives… -->
+
+<!-- step0: download to ~/src/craft-more or use a reference to the online repo -->
 
 ## 1. Register the skills
 
 Add a `skills` block to your opencode config. `skills.paths` entries are directories scanned recursively for `**/SKILL.md`:
 
+<!--
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
   "skills": {
-    "paths": ["/home/vibe/src/vibe-less/skills"]
+    "paths": ["~/src/craft-more/skills"]
   }
 }
 ```
@@ -39,7 +42,7 @@ Reference the file explicitly so it loads everywhere:
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["/home/vibe/src/vibe-less/AGENTS.md"]
+  "instructions": ["~/src/craft-more/AGENTS.md"]
 }
 ```
 
