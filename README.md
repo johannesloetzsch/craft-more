@@ -19,7 +19,7 @@ Idea: an animated morph `slop-less` ↔ `slop|less`, like a loading bar.
 
 ### Research
 - `environment-discovery` — Resource-efficient, non-intrusive environment probing
-- `web-research` — Research strategy: local-first, decision tree
+- `web-research` — Research strategy: goal first, source ladder from cheapest to most expensive
 - `info-source-index` — Entry point: where to look first
 
 ### Learning loop
@@ -67,3 +67,11 @@ Installation: see [`GETTING_STARTED.md`](GETTING_STARTED.md).
 ## Maturity
 
 Mock — early and under active development. <!-- Repo-level label; individual skills may deviate. -->
+
+Works for me already better than the other tooling I know.
+
+Glad if it is useful for you too…
+…when you have questions feel free to ask.
+When you have suggestions how to improve: I'll be happy.
+
+The suggested markers and protocols can be understood as a draft for an RFC ;)
