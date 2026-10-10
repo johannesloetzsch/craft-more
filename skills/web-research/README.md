@@ -24,13 +24,13 @@ Research with this skill starts from a precise goal and follows a structured pat
 3. 🔍 **Web search** — one query, at most one follow-up, always bound to the goal.
 4. 📄 **Fetch** — retrieve a concrete page only when the previous stages justify it.
 
-### 🏁 FINISH and 🏳️ CHECK
+### 🏁 FINISH and 🚧 CHECK
 
-<!-- Rendering quirk: the white flag (U+1F3F3 + FE0F) may not render inline, especially after list punctuation. Keep it at the start of its own line, outside "- " list items. -->
+<!-- Symbol history: [CHECK] was originally shown with the white flag (U+1F3F3 + FE0F), which failed to render on several systems; it now uses the construction site 🚧. The symbol is only a memory aid — the meaning of CHECK is the deliberate pause and re-evaluation. -->
 
 🏁 `[FINISH]` — the goal and its abort condition: "ready when …", and we stop as soon as it is reached.
 
-🏳️ `[CHECK]` — a checkpoint on the way: pause ("firepause"), check whether something can be achieved here, then stay neutral and re-evaluate the strategy. When racing for the FINISH, sometimes we should not rush…
+🚧 `[CHECK]` — a pause on the way: interrupt the run, check what can be settled here, and re-evaluate the strategy before continuing. The construction site is only a mnemonic — the meaning is the deliberate halt.
 
 ### Rules
 

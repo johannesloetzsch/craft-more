@@ -13,36 +13,41 @@ Idea: an animated morph `slop-less` ↔ `slop|less`, like a loading bar.
 
 ## Skills
 
+Status: ⚪ planned · 🟣 draft · 🔴 mock · 🟠 poc · 🟡 prototype · 🟢 mvp · 🔵 mature — see [maturity-model](skills/maturity-model/).
+
 ### Core workflow
-- `plan-build-workflow` — Plan/build separation, approval flow, stay in the loop
-- `cost-budget-guardrails` — Token/permission budget, cheapest source first
+- 🔴 `workflow` 🌱 — Read back, think in the open, review early — your goal, your plan, your every step; craft, not slop
+- 🔴 `plan-build-workflow` 🌱 — One unit of work, done in the open: plan and grill it first, then build in small approved steps — nothing written without a go
+- ⚪ `cost-budget-guardrails` 📄 — Token/permission budget, cheapest source first
 
 ### Research
-- `environment-discovery` — Resource-efficient, non-intrusive environment probing
-- `web-research` — Research strategy: goal first, source ladder from cheapest to most expensive
-- `info-source-index` — Entry point: where to look first
+- ⚪ `environment-discovery` 📄 — Resource-efficient, non-intrusive environment probing
+- 🔴 `web-research` 🌱 — Research strategy — set the goal first, then walk the source ladder from the cheapest to the most expensive source, naming each step along the way
+- ⚪ `info-source-index` 📄 — Entry point: where to look first
 
 ### Learning loop
-- `maturity-model` — 0–5 maturity scale and labeling
-- `evaluation-report` — Report template, reflection and meta-learning
+- 🔴 `evaluation-report` 🌱 — A structured report of finished work with built-in reflection — whose proposed rules feed skill-evolution
+- 🔴 `maturity-model` 🌱 — Make the maturity of a project — or any part of it — visible and honest: one status label from planned to mature, so quality claims are recognizable at a glance
 
 ### Meta & wrap-up
-- `name-discovery` — Interactive naming: criteria, conflict and domain checks
-- `skill-discovery` — Find top skills from leaderboards and curators
-- `skill-authoring` — Author skills per the Agent Skills standard
-- `skill-evolution` — Decide how an optimization maps to a skill
-- `workflow` — Meta-skill orchestrating the others
+- 🔴 `skill-authoring` 🌱 — Author new skills without drift — each one self-contained, reader-first, and every rule in a single home
+- ⚪ `skill-discovery` 📄 — Find top skills from leaderboards and curators
+- 🔴 `skill-evolution` 🌱 — Every proposed rule gets a home — extend an existing skill, start a new one, or park it in the backlog
+- ⚪ `name-discovery` 📄 — Interactive naming: criteria, conflict and domain checks
 
 ### Behavior & guardrails
-- `uncertainty-and-verification` — Verify whenever the actual purpose requires it
-- `step-sequencing` — Order steps for resource efficiency and interactivity
-- `interaction-guard` — Avoid long local loops; escalate to the user
+- 🔴 `uncertainty-and-verification` 🌱 — Verify whenever the actual purpose requires it — a protocol for keeping a shared, honest picture of how valid the information we process is
+- ⚪ `step-sequencing` 📄 — Order steps for resource efficiency and interactivity
+- ⚪ `interaction-guard` 📄 — Avoid long local loops; escalate to the user
+
+### Audit
+- ⚪ `audit-consistency` 📄 — Check the collection against its own conventions (headings, quotes, paths, links, catalog)
 
 ### Communication & style
-- `emoji-markers` — Per-paragraph status markers (`EMOJI [WORD]`)
-- `communication-style` — English terminology, plan/rule reference naming
-- `language-selection` — Choose programming languages with justification
-- `coding-style` — Coding style conventions
+- 🟢 `emoji-markers` 🏁 — A conversational output protocol that prefixes each paragraph with a single status marker (emoji plus uppercase word marker)
+- ⚪ `communication-style` 📄 — English terminology, plan/rule reference naming
+- ⚪ `language-selection` 📄 — Choose programming languages with justification
+- ⚪ `coding-style` 📄 — Coding style conventions
 
 Installation: see [`GETTING_STARTED.md`](GETTING_STARTED.md).
 
@@ -66,7 +71,7 @@ Installation: see [`GETTING_STARTED.md`](GETTING_STARTED.md).
 
 ## Maturity
 
-Mock — early and under active development. <!-- Repo-level label; individual skills may deviate. -->
+🔴 mock 🌱 — The repo is new and under active development. <!-- Repo-level label; individual skills may deviate. -->
 
 Works for me already better than the other tooling I know.
 

@@ -4,22 +4,34 @@
 
 ---
 
-## steering, checkpoints, finish
+## Steering, Checkpoints, Finish
 
 - 🏁 `[FINISH]` — the main goal and its abort condition ("ready when …"): stop the moment it is reached.
-- 🏳️ `[CHECK]` — a checkpoint on the way: pause ("firepause"), check whether something can be achieved here, then stay neutral and re-evaluate the plan. Racing origin: the white flag — sometimes we should not rush the last lap.
+- 🚧 `[CHECK]` — a pause on the way: interrupt the run, check what can be settled here, and re-evaluate the plan before continuing. The construction site is only a mnemonic — the meaning is the deliberate halt.
 - 🧲 `[STEER]` — steering toward sub-goals; keeps a long task pointed at the current objective.
 
 <!--
-Rendering quirk: the white flag (U+1F3F3 + FE0F) may not render inline, especially after list punctuation. Keep it at the start of its own line, outside "- " list items — the README mock documents this as an HTML comment.
+Symbol history: [CHECK] was originally shown with the white flag (U+1F3F3 + FE0F), which failed to render on several systems; it now uses the construction site 🚧. Either way the symbol is only a memory aid — the meaning of CHECK is the deliberate pause and re-evaluation.
 -->
 
 Status: `pending`. FINISH and CHECK are already used in the mock at [../web-research/README.md](../web-research/README.md).
 
-## testing, inspecting, evidence
+## Testing, Inspecting, Evidence
 
 - 🔎 `[INSPECT]` — look closer at something; invites a deeper check.
 - 🧪 `[LAB]` — lab trial: things are tried out here; explicitly experimental.
 - 📎 `[EVIDENCE]` — attach evidence for a claim; strengthens a statement (pair with `[OK]`/`[WARN]`).
 
 Status: `pending`.
+
+## Execution modes
+
+- 🌙 `[NIGHTSHIFT]` — explicitly approved batch run: the interactive grill loop pauses for a once-off automated stretch and resumes after it.
+
+Status: `pending`. Proposed while evaluating the anti-batch ideas ("grill instead of toast" motto).
+
+## Packaging, shipping
+
+- 📦 `[PACKAGING]` — bundling and shipping an artifact (a skill, a release, a collection). The crate symbol is reserved for packaging and is not available for the maturity ladder.
+
+Status: `pending`. Symbol reserved on request: the crate stays out of the maturity state symbols.

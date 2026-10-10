@@ -4,7 +4,7 @@ Verify whenever the actual purpose requires it — a protocol for keeping a shar
 
 This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
 
-## Problem
+## Goal
 
 Agents and humans easily drift apart on how trustable the information in a session is: important statements get phrased as absolute truth, unverified claims are acted on silently, and it stays unclear whether more research or information retrieval would have been worth the effort.
 

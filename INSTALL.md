@@ -22,6 +22,8 @@ Add a `skills` block to your opencode config. `skills.paths` entries are directo
 }
 ```
 
+-->
+
 Config locations:
 
 - Global: `~/.config/opencode/opencode.jsonc`
@@ -31,11 +33,11 @@ Config locations:
 
 Skills are loaded on demand, so a rule applies only when its skill triggers. To apply rules in every session, use instructions.
 
-### B) Project `AGENTS.md`
+### A) Project `AGENTS.md`
 
 opencode auto-gathers `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/`, `.cursorrules`, and `.github/copilot-instructions.md`. Running opencode with the working directory inside this repo auto-loads `AGENTS.md` — no config entry needed.
 
-### A) Global instructions
+### B) Global instructions
 
 Reference the file explicitly so it loads everywhere:
 
