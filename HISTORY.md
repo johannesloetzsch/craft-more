@@ -498,3 +498,87 @@ Proposed rules
 - 📌 Tools stay out of the repository; the skill documents the method. Implementation: `session-replay` (planned).
 
 ⏰ [REVISIT] Approach (b) — interactive replay by grilling intent and progress — explicitly open · grill answers (design principles) → build tool → replay in the clone → verify with ground-truth diff → single commit on the branch → refine `session-replay` from the run · validate `session-archaeology` by its first real use.
+
+---
+
+## 2026-10-12 · Authoring session-replay; choosing tools by requirement
+
+🤒 [SYMPTOM] The skill `session-replay` was authored and its 1:1 replay tool planned, but the tool's instrument was first recommended as a single `bash+jq` script — the tool already in hand — and only re-decided as `python3` after the user demanded a requirements argument ("what are the requirements? pros and cons?"). The same habit showed in file inspection, where `tail`/`ls`/`grep` went through the shell instead of the dedicated tools; and the environment check that `python3` is absent (only `nix` is present) ran only because the user asked.
+
+🩺 [DIAGNOSIS] Instrument choice followed habit, not requirement: the loaded tool stood in for a decision. Availability was then treated as a constraint that could downgrade the solution, rather than a supply detail — and a dependency assumption ("stdlib only") was stated as an axiom instead of a decision to grill.
+
+🎯 [ROOT-CAUSE] A default instrument is mistaken for a decision. Choice must run requirement-first; availability is a later supply question, not a reason to weaken the choice.
+
+🔧 [FIX] `session-replay` authored (README + catalog line, 🔴 mock) via grill-first: its Strategy opens with the approach decision — (a) mechanical 1:1 replay vs (b) interactive replay (read the export, summarize, grill) — followed by the tool's principles (byte-identical target, unique `oldString` with fail-fast and user involvement on divergence, ground-truth verification, replay isolation in a fresh clone at the common ancestor, merging left to the user). The tool's instrument is fixed as `python3` (typed, commented where helpful, byte-exact). The rules about choosing tools were corrected in-session. Content details in git.
+
+💡 [LEARNING] Prioritised:
+1. **Decide tools by requirement, never by availability** — and if the right tool is missing, ask the user to provide it; absence is a supply request, not a constraint on the choice.
+2. **The loaded tool is not a decision** — argue the requirements before naming an instrument (the bash short-circuit).
+3. **"Stdlib only" is a decision to grill, not an axiom** — stdlib when it is genuinely simpler and better; for complex tasks, agree with the user which common libraries to consider rather than reinventing.
+4. **Feasibility checks are cheap and belong in the decision** — as supply, not as a gate on the ideal.
+5. **A separate skill for tool/toolchain decisions is the right home** for these rules — a rule belongs where it acts.
+
+♻️ [REFLECTION]
+
+Applied rules: skill-authoring (grill-first, README rules) · evaluation-report (entry as a unit; the standalone rule, applied here) · plan-build-workflow (grill by theme; whole frontier on "grill-me") · session-replay (Step 1 approach decision) · emoji-markers (closed set)
+
+Strengths
+- ✅ `session-replay` authored via grill-first: an 11-question frontier plus one correction round, then a single deterministic write.
+- ✅ The replay preflight was proven in pure `jq` before any write (79 ops; 78 completed, 1 skipped) — read-only evidence.
+- ✅ The user's "argue the solutions" prompt flipped the instrument from `bash` to `python3`.
+- ✅ The new standalone-entry rule was applied by writing this entry against it.
+
+Improvements
+- ⚠️ Recommended `bash+jq` by habit while flagging its fragility. Fix: derive requirements before recommending. (future tool-decision skill)
+- ⚠️ Stated "stdlib only" as an axiom. Fix: propose it as a decision to grill. (future tool-decision skill)
+- ⚠️ Ran the availability check only on request. Fix: make tool feasibility a routine step of the decision. (future tool-decision skill)
+
+Proposed rules
+- 📌 Choose tools by requirement, not availability; a missing tool is a request to the user to provide it. Implementation: tool/toolchain-decision skill (to be created).
+- 📌 Argue the instrument against the requirements before recommending it. Implementation: tool/toolchain-decision skill (to be created).
+- 📌 Dependency choices (stdlib vs common libraries) are grilled decisions, not defaults. Implementation: tool/toolchain-decision skill (to be created).
+
+⏰ [REVISIT] Build the `session-replay` tool (`python3`) → reconstruct h1x in the clone → verify by ground-truth diff → one commit on the branch → refine `session-replay` from the run · create the tool/toolchain-decision skill · approach (b) interactive replay stays open.
+
+---
+
+## 2026-10-13 · Replaying h1x — when the base is not a commit
+
+🤒 [SYMPTOM] The 1:1 replay tool was built and run in an isolated clone, but `apply` diverged three times before completing: the first `README.md` edit (its anchor used linkified skill names), the first `communication-style/README.md` edit, and the final `parse-back/README.md` edit. Each time the `oldString` the session recorded was simply not in the file the replay had produced.
+
+🩺 [DIAGNOSIS] Two assumptions behind a commit-based replay were false. The session started from an **uncommitted working tree**, so its base is no commit (the catalog was linkified by hand; `AGENTS.md` and `HISTORY.md` were earlier drafts that never landed); and the **human edited files out-of-band mid-session** — between `write`/`edit` operations, with no tool call in between — so those changes are invisible to the operation log. A third, quieter artifact: the read tool drops the file's final newline, which had been misread as a "116 → 117" content change.
+
+🎯 [ROOT-CAUSE] A replay assumes every change is tool-mediated and the base is a commit. In a human-in-the-loop session neither is guaranteed: hand edits and an uncommitted base are first-class, and the operation log alone cannot reconstruct them.
+
+🔧 [FIX] Ground the reconstruction in the session's own reads, not only its operations. `seed` materialises each touched file's base from its earliest full pre-op read; `restore_trailing_newline` repairs the newline a read drops; on a missing anchor the tool **re-anchors** from a whole-file read taken after the last applied operation (so replayed work is never reverted) and, failing that, adopts the file's **final read** as a labelled `read-grounded` fallback; scratch `.tmp/` files are out of scope; and `--dry-run` writes to an in-memory store so the preview is the real logic. Result in the clone: `applied=61 reanchored=3 read_grounded=1`; `verify` = 10 verified, 1 unverified (`skill-authoring`, no post-op read), 0 mismatched; two commits on `replay/h1x-reconstruct`; the tool kept out of the repository. Details in git.
+
+💡 [LEARNING] Prioritised:
+1. **A session's base may not be a commit** — materialise it from the session's own earliest full reads, seeding only the files whose base differs from the checkout.
+2. **Reads are the ground truth, operations are the mechanism** — verify against post-operation reads, and reconstruct from reads when operations cannot reproduce a file.
+3. **Out-of-band human edits are invisible to the log** — a missing anchor means re-anchor from the latest read, never hand-patch; a labelled read-grounded fallback keeps the result honest.
+4. **Reads drop the trailing newline** — restore it; do not read a phantom line change into it.
+5. **Scope a replay to tracked artifacts** — scratch `.tmp` files are created out-of-band and can be neither replayed nor verified.
+6. **A dry-run must share the real code path** — an in-memory store makes the preview faithful and caught every divergence before a write.
+
+♻️ [REFLECTION]
+
+Applied rules: session-replay (first real use — its approach fork, isolation, ground-truth step, and tool principles all proved out) · evaluation-report (entry as a unit, standalone entries, delta-check) · plan-build-workflow (grill the two decisions before building; one unit at a time; checkpoints) · emoji-markers (closed set) · uncertainty-and-verification (labels on every claim) · tool-selection (stdlib decided by requirement; no fallback when the runtime was missing — asked the user).
+
+Strengths
+- ✅ The faithful dry-run caught all three divergences before any byte hit disk — the shared-store refactor paid for itself immediately.
+- ✅ Re-anchoring stayed guarded (only reads newer than the last applied operation), so replayed work was never silently reverted.
+- ✅ `verify` ended at 10 verified / 0 mismatched against the session's own reads; the single gap (`skill-authoring`) is labelled, not hidden.
+- ✅ Everything lived in an isolated clone on a feature branch; `main` never changed.
+
+Improvements
+- ⚠️ Assumed a commit-based common ancestor (~70–80%) and built the plan on it before checking the catalog format. Fix: diff the session's first reads against the candidate commit as step one. (session-replay)
+- ⚠️ The "116 → 117" newline was treated as a content question until the read-strips-newline behaviour was found. Fix: check the read/trailing-newline convention before interpreting line counts. (session-replay)
+
+Proposed rules
+- 📌 Materialise a session's base from its earliest full per-file reads; seed only files whose base differs from the checkout. Implementation: `session-replay`.
+- 📌 Re-anchor a missing `oldString` from the latest whole-file read after the last applied operation; adopt a labelled final-read fallback when none exists. Implementation: `session-replay`.
+- 📌 Restore the trailing newline a read drops before comparing or seeding. Implementation: `session-replay`.
+- 📌 Scope replays to tracked artifacts; leave scratch files out. Implementation: `session-replay`.
+- 📌 Make `--dry-run` share the apply code path via an in-memory store. Implementation: `session-replay`.
+
+⏰ [REVISIT] Fold these lessons into `session-replay` · approach (b) interactive replay stays open · the reconstructed artifact lives on `replay/h1x-reconstruct` in `.tmp/replay` (merge is the user's call).

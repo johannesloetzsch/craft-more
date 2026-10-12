@@ -19,6 +19,7 @@ Status: ⚪ planned · 🟣 draft · 🔴 mock · 🟠 poc · 🟡 prototype · 
 - 🔴 `workflow` 🌱 — Read back, think in the open, review early — your goal, your plan, your every step; craft, not slop
 - 🔴 `plan-build-workflow` 🌱 — One unit of work, done in the open: plan and grill it first, then build in small approved steps — nothing written without a go
 - ⚪ `cost-budget-guardrails` 📄 — Token/permission budget, cheapest source first
+- 🔴 `tool-selection` 🌱 — Move towards the goal with the right instrument — deliberately chosen by requirements
 
 ### Research
 - ⚪ `environment-discovery` 📄 — Resource-efficient, non-intrusive environment probing
