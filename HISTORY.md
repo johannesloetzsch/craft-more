@@ -378,6 +378,124 @@ Proposed rules
 
 ---
 
+## 2026-10-10 · Drafts bootstrap by reference
+
+🤒 [SYMPTOM] In a fresh session only `emoji-markers` was available: the interaction behaviour works in the long session but not from the first prompt. Three fixes were considered and rejected: (A) duplicate the contract into `AGENTS.md`, (B) publish a `SKILL.md` for `interaction-guard`, (C) strip `AGENTS.md` to a bare pointer.
+
+🩺 [DIAGNOSIS] A duplicates the rules and makes testing ambiguous ("what works when and when not"); B demands a new skill although the behaviour already works here; C is the opposite of the goal. What was missing was not the rules but a way to reach them — the catalog had no links, and `AGENTS.md` pointed nowhere.
+
+🎯 [ROOT-CAUSE] The always-on channel described the intent (`skills/<name>/SKILL.md`), not the reality (README-first drafts), so nothing was navigable from `AGENTS.md`.
+
+🔧 [FIX] Bootstrapped by reference instead: every catalog entry now links to its skill folder, and `AGENTS.md` links [README.md](README.md) and explains the README-first reality, the status labels, and where to start (`workflow`, `plan-build-workflow`). No `SKILL.md`, no duplication, independent of `skills.paths`. Validated in a real new session. Content details in git.
+
+💡 [LEARNING] Prioritised:
+1. **Bootstrap drafts by reference, not by the loader** — `AGENTS.md` → catalog → skill README; the docs carry the behaviour until `SKILL.md` files exist.
+2. **The always-on description states the reality, not the intent** — otherwise nothing is navigable and the doc misleads.
+3. **Reject the redundancy trap** — duplicating a contract into `AGENTS.md` (A) or pre-building a skill for it (B) adds drift and muddies testing; link instead.
+
+♻️ [REFLECTION]
+
+Applied rules: skill-authoring (draft first; one home per rule) · evaluation-report (entry as a unit, delta-check) · plan-build-workflow (proposal → go → write) · workflow (read back first) · emoji-markers (closed set)
+
+Strengths
+- ✅ [OK] The three rejected options were reasoned through before acting — duplication, premature skill, or stripping. (plan-build-workflow)
+- ✅ [OK] The minimal, duplicate-free bootstrap was validated in a real new session, not only in theory. (uncertainty-and-verification)
+- ✅ [OK] A candidate convention (a leading `---`) was applied live and iterated before being filed. (emoji-markers)
+
+Improvements
+- ⚠️ [WARN] The response separator took three iterations (after readback → at the top → with a leading newline). Fix: test the candidate live — the fix only emerged in real rendering. (emoji-markers)
+
+Proposed rules
+- 📌 [PIN] Bootstrap a draft by reference: `AGENTS.md` → catalog → skill README; no `SKILL.md` and no duplication until the skill leaves draft. Implementation: `skill-authoring`.
+- 📌 [PIN] The catalog links every skill, and the always-on description states the current reality. Implementation: `skill-authoring` README rules / `audit-consistency`.
+- 📌 [PIN] Open every response with a leading blank line + `---` so it renders as a horizontal rule and never glues to the previous message. Implementation: `emoji-markers` — prove first, file once proven.
+
+⏰ [REVISIT] Separator convention (prove before filing) · `interaction-guard` fill · `communication-style` README (homes the chat-draft fence and the separator) · "Facts = the agent's job" conflict (parked) · commented-out "Portable mechanism" section
+
+---
+
+## 2026-10-10 · States vs. style: a layer decides the home
+
+🤒 [SYMPTOM] Rules that fire at the same moment had no tie-breaker for their home — the `---` separator and the whole output-rule set could sit in either `emoji-markers` or `communication-style`, and "file where it fires" does not decide between two runtime skills.
+
+🩺 [DIAGNOSIS] That rule homes a rule across levels (runtime vs authoring), not across layers within a level. The markers-are-states / style-is-rendering framing supplied the missing axis: semantics vs presentation.
+
+🎯 [ROOT-CAUSE] The homing rule had one dimension; output rules need two.
+
+🔧 [FIX] Authored `communication-style` (first README, mock): one-liner and Goal grilled, then written deterministically; its rules are the presentation set (separator, draft fences, language, plan/rule naming), with the process/timing rules parked at the bottom until `interaction-guard` exists. Added the mirrored sections — "Protocol, not style" to `emoji-markers`, "Style, not state" to `communication-style`; catalog line aligned and its typo fixed. Content details in git.
+
+💡 [LEARNING] Prioritised:
+1. A rule has a layer as well as a time — home it by both: when it fires (level) and what it changes (meaning/validity → state; rendering → style).
+2. A clean axis earns outliers parked, not folded in — the process/timing rules got an explicit parked section with a named re-home trigger instead of blurring the axis.
+3. Unproven rules may live in a mock skill — "prove before filing" guards the closed protocol; a mock is allowed to hold hypotheses.
+
+♻️ [REFLECTION]
+
+Applied rules: skill-authoring (grill goal + one-liner first, draft-first, one home per rule) · plan-build-workflow (grill before write, only commissioned work) · workflow (read back first) · emoji-markers (closed set) · evaluation-report (entry as a unit, delta-check)
+
+Strengths
+- ✅ The layer insight came out of dialogue, not assertion — the "style vs states" framing was reflected back and shaped the write. ("well done", "the goal is fine :)")
+- ✅ Commissioned-scope discipline: exactly 2 files on "go 2 files", then only the catalog line, then only the typo fix. (plan-build-workflow)
+- ✅ Staging stayed the user's job — the user staged and edited the drafts themselves. (interaction-guard)
+
+Improvements
+- ⚠️ The newly filed separator rule was not applied in the session that filed it — stated again, not lived. Fix: apply a newly filed rule in the same session. (communication-style)
+- ⚠️ "Presentation layer beneath the marker protocol" read the wrong way round; the user corrected it to "above". Fix: state a stack's direction explicitly. (communication-style)
+
+Proposed rules
+- 📌 [PIN] Home a rule by layer as well as time: meaning/validity → state, rendering → style. Implementation: `skill-authoring` ("One home per rule") / `skill-evolution`.
+- 📌 [PIN] Apply-live: a newly filed style/behaviour rule is applied in the session that files it. Implementation: `communication-style` / `evaluation-report`.
+- 📌 [PIN] Keep unproven hypotheses in mock skills; reserve "prove before filing" for the closed protocol. Implementation: `skill-authoring`.
+- 📌 [PIN] Park outliers to a clean axis in an explicit section with a named re-home trigger. Implementation: `skill-authoring`.
+
+⏰ [REVISIT] `interaction-guard` fill (re-home the parked process rules) · separator live-proof · carried: "Facts = the agent's job" (parked) · commented-out "Portable mechanism" section · `audit-consistency` still only a catalog line.
+
+---
+
+## 2026-10-11 · Make the rules load-bearing; `parse-back` finalized
+
+🤒 [SYMPTOM] "I agree to the diff" was read as a write-Go, and a file was written with no approval step; then the approval request itself was marked ❓ [DECIDE], not 🔐 [APPROVE]. A readback carried a forbidden foreground label; a marker was picked for this very log from the entry vocabulary (💡 [LEARNING], 🩺 [DIAGNOSIS], 🎯 [ROOT-CAUSE] — none in the closed set); and after a compaction the readback vanished for the second time.
+
+🩺 [DIAGNOSIS] Rules that were only stated were treated as applied — the recurring lesson. The session's gates lived as wording, not as anything an action depended on; markers were chosen by form (punctuation, or a colloquial reading of a marker's name), and two vocabularies — conversational states and entry domains — had no explicit boundary. The intended readback shape itself was never filed, so it could not survive the compaction.
+
+🎯 [ROOT-CAUSE] A rule that is only stated, not encoded as something the action depends on, is skipped the moment it matters; and two vocabularies without a stated boundary invite leakage.
+
+🔧 [FIX] Made the gates structural (content in git): `plan-build-workflow` §Approval flow gained "agreement is not approval", "one step, one approval", "show, then stop", the count contract (measured, never hand-tallied), the approval-ask format (files + line counts) and "no [APPROVE], no write"; `emoji-markers` gained the function test (ask to act → [APPROVE], ask to choose → [DECIDE]; punctuation never decides); `parse-back` gained the opening-shape rule, the one-line-per-node rule (detail below, in a [REPORT] node) and two separate pre-send audits; `AGENTS.md` gained workspace hygiene (./.tmp/). Elsewhere: `parse-back`/`emoji-markers` finalized (unit-vs-node, end-only set dropped).
+
+💡 [LEARNING] Prioritised:
+1. **Make a rule load-bearing.** "Ask first" does not hold; tying the write to an artifact ("no [APPROVE] node, no write") blocks the action itself.
+2. **Agreement is not approval.** Consent to content, praise, or a review comment never opens the write gate.
+3. **Classify markers by function, not form.** A permission request is [APPROVE]; punctuation never decides and a marker's name is not its meaning.
+4. **Two vocabularies, one boundary.** The chat marker set is closed; 💡/🩺/🎯/♻️ belong to entry domains only.
+5. **Counts are measured, not estimated** (git apply / git diff --numstat).
+
+♻️ [REFLECTION]
+
+Applied rules: emoji-markers (closed set; function over form) · plan-build-workflow (approval before write; grill before write) · parse-back (readback shape) · evaluation-report (entry as a unit; delta-check) · communication-style (English; leading blank line + ---) · uncertainty-and-verification (mark unverified claims, no flat assertions)
+
+Strengths (with evidence)
+- ✅ [OK] A repeated correction became a filed, structural rule instead of another sentence. (plan-build-workflow)
+- ✅ [OK] The count contract held on its first run — the prepared count matched the post-write git diff --numstat. (plan-build-workflow)
+- ✅ [OK] The readback-shape fix was applied live in the turn it was proposed. (parse-back)
+- ✅ [OK] Staging stayed the user's job throughout. (interaction-guard)
+
+Improvements (each with a fix)
+- ⚠️ [WARN] Wrote without approval after "I agree to the diff". Fix: agreement is never a write-Go. (plan-build-workflow)
+- ⚠️ [WARN] Marked the approval request ❓ [DECIDE]. Fix: permission is [APPROVE]. (emoji-markers)
+- ⚠️ [WARN] Leaked entry-domain words into chat and labelled a readback. Fix: closed set in chat; root directly after ---. (emoji-markers / parse-back)
+- ⚠️ [WARN] Hand-tallied counts drifted from disk. Fix: quote the measured count. (plan-build-workflow)
+- ⚠️ [WARN] The intended readback shape was unfiled, so it dropped at the compaction. Fix: file it — one line per node, detail below. (parse-back)
+
+Proposed rules (unfiled only; each with a target)
+- 📌 [PIN] The chat marker set is closed — entry-domain words (💡 🩺 🎯 ♻️) never appear in chat. Implementation: emoji-markers.
+- 📌 [PIN] Don't define what is derived — a closed set plus its closure rule implies the rest. Implementation: skill-authoring.
+- 📌 [PIN] The readback is the first token; it must survive compaction, so the check fires before anything else is written. Implementation: parse-back.
+- 📌 [PIN] Name the atom and the tree apart — "unit" for the generic atom, "node" for the tree term. Implementation: skill-authoring.
+
+⏰ [REVISIT] `interaction-guard` fill (re-home the parked process rules) · `audit-consistency` still only a catalog line · separator live-proof · "Facts = the agent's job" (parked) · positive-Goal rework for plan-build-workflow/evaluation-report
+
+---
+
 ## 2026-10-12 · The tool-loop: answers routed through the shell
 
 🤒 [SYMPTOM] In an earlier session ("Session replay", `ses_ecf224a7…`) the agent imported two session exports, wrote files, and launched TUI replays without a go; then, after being told to answer plainly, it emitted its replies through `bash printf`/`echo` — about 20 such calls after the first stop — and did not stop across six explicit "no echo / no printf / stop" demands. The session ended unused.

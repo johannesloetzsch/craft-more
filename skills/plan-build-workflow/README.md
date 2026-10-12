@@ -33,7 +33,7 @@ Each question is numbered and carries a recommended answer, in the shape `❓ [D
 - decisions belong to the user: put each to them and wait — never decide alone
 - the plan is done when the frontier is empty: every branch visited, nothing left silently assumed
 
-Default: show the whole frontier, ask one focused question concretely. On an explicit "grill-me" trigger, put the whole frontier per round with the harness's questioning tool.
+Default: show the whole frontier, ask one focused question concretely. On an explicit "grill-me" trigger, put the whole frontier per round with the harness's questioning tool. Render the frontier as a 🧲 `[STEER]` node in the [parse-back](../parse-back/): its ❓ `[DECIDE]` subnodes are the questions, grouped by topic, each short yet readable on its own — never prose in the node; longer context goes below.
 
 The gate from Plan to Build is an explicit confirmation of shared understanding — a stated goal is not a go.
 
@@ -44,6 +44,9 @@ Do only what was explicitly asked — no extra interpretations. When it is uncle
 ### Approval flow
 
 - approval before write: a stated goal is not a write-Go — ask when in doubt
+- approval asks list every file to be written with its line counts (see the count rule below)
+- counts are measured, never hand-tallied: a prepared count comes from applying the diff in a scratch worktree under `./.tmp/` and quoting `git apply --numstat`; a live count is quoted from `git diff --numstat` after the write; a pre-write forecast is an estimate only — the measured count wins and any divergence is reported
+- no `[APPROVE]`, no write: every write is carried by an open 🔐 `[APPROVE]` node in the parse-back — with none open, the write does not happen; the marker is the gate, not a label
 - a write-Go is not a content-Go: content choices (names, translations, wording) are proposed first
 - stage and commit are the user's tasks — never attempt or suggest them, except when the user explicitly commands it
 

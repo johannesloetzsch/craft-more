@@ -36,6 +36,8 @@ Derived while authoring the first skill READMEs and still `mock`:
 - harness-neutral: tool names stay out — say "web search", not `websearch`
 - never break a rule in the same artifact that states it — stating a rule is not applying it
 - unvalidated content is labeled `mock` or hypothesis, never silently claimed as fact
+- closure over enumeration: state the rule that implies the rest; do not enumerate what the closure already covers
+- distinct names: give a generic atom and its structural term separate words — `unit` for the atom, `node` for the tree — never one name for both
 
 ### Authoring workflow
 

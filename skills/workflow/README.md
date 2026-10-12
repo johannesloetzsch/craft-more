@@ -24,7 +24,7 @@ When several tasks arrive at once, they become a numbered backlog: mirror them b
 
 ### Keeping the user in the loop
 
-- **Read back first.** Every answer opens with a short own-words summary of the task.
+- **Read back first.** Every answer opens with the [parse-back](../parse-back/) outline.
 - **Think in the open when it helps.** Surface the reasoning for complex or ambiguous work; give just the result when it is simple.
 - **Review early.** No silent waiting — the user should be able to step in from the first line.
 
