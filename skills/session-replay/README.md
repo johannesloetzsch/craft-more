@@ -34,6 +34,14 @@ The tool:
 - **byte-identical by target** — correct means reproducing the recorded file state exactly
 - **fail-fast** — the first divergence aborts the run with a report
 - **verified by ground truth** — compare the result against the export's own reads taken after the last edit; report newline deltas; reuse the existing confidence labels (verified / likely / unverified / assumption), define none
+- **seeded when the ancestor does not exist** — when no common-ancestor commit can be found, materialise the base from the session's earliest full pre-op reads, seeding only files whose base differs from the checkout, and restore the trailing newline a read drops
+- **re-anchored on a human edit** — a missing `oldString` is an out-of-band human edit, not a bug: re-anchor from the latest whole-file read taken after the last applied operation, never reverting replayed work; when none exists, adopt the file's final read as a labelled read-grounded result
+- **scoped to tracked artifacts** — scratch and `.tmp` files cannot be replayed or verified; skip them by default
+- **previewed faithfully** — a dry-run shares the apply code path (an in-memory store), so a divergence surfaces before anything is written
+
+### Merging a replay
+
+Merging is reconciliation, not overwrite: the reconstructed tree may parallel the target's later history. Keep target-only files, adopt the reconstructed artifact, and resolve shared files deliberately — the base-snapshot commit is meaningless in the target, so squash the reconstruction into one commit. Merging stays a separate step and belongs to the user.
 
 ### Interactive replay
 

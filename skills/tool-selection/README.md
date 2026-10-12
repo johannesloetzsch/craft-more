@@ -29,6 +29,15 @@ Choose tools by requirement — never by availability, and never by what is alre
 5. Decide dependencies — stdlib or an agreed library.
 6. Settle availability with the user — if the right tool is absent, ask for it and decide together.
 
+### The requirement can be a constraint
+
+A requirement is not always the task itself; it can be a condition of the delivery:
+
+- **choose the mechanism by the target's need** — a merge that must land as one commit on top of the target, built in isolation, is a squash-merge, not a rebase: the mechanism follows the constraint
+- **a missing runtime is supply, not a ceiling** — obtain the instrument (for example `nix shell … python3`) rather than weaken the solution
+- **prefer an existing instrument over hand-rolling** — use git's own merge or squash, not a hand-applied patch
+- **read the target's conventions before transforming it** — inspect the schema and format (types, newline handling, field names) before choosing the transform
+
 ### Writing the instrument
 
 When the chosen tool is a script, the decision does not end at the choice:
@@ -36,6 +45,7 @@ When the chosen tool is a script, the decision does not end at the choice:
 - follow the prevailing best practices for that language
 - add comments where they serve review
 - enforce proper typing where the language offers it
+- give it a faithful preview when it writes — a dry-run that shares the real code path, so a mistake shows before anything is changed
 
 ### Evidence
 

@@ -660,7 +660,7 @@ Proposed rules
 
 ---
 
-## 2026-10-13 · Replaying h1x — when the base is not a commit
+## 2026-10-13 · Replaying — when the base is not a commit
 
 🤒 [SYMPTOM] The 1:1 replay tool was built and run in an isolated clone, but `apply` diverged three times before completing: the first `README.md` edit (its anchor used linkified skill names), the first `communication-style/README.md` edit, and the final `parse-back/README.md` edit. Each time the `oldString` the session recorded was simply not in the file the replay had produced.
 
@@ -700,3 +700,50 @@ Proposed rules
 - 📌 Make `--dry-run` share the apply code path via an in-memory store. Implementation: `session-replay`.
 
 ⏰ [REVISIT] Fold these lessons into `session-replay` · approach (b) interactive replay stays open · the reconstructed artifact lives on `replay/h1x-reconstruct` in `.tmp/replay` (merge is the user's call).
+
+---
+
+## 2026-10-13 · Merging the reconstruction; a merge is a reconciliation
+
+🤒 [SYMPTOM] The h1x reconstruction was verified and ready to bring into `main`, but the integration the user first named — a rebase — did not fit: the two lines of history had diverged (the h1x session track versus `main`'s session-forensics track), so each side carried content the other lacked. Resolving the branch-side `README.md` on a "regenerate the catalog later" promise silently dropped three catalog entries (`tool-selection`, `session-archaeology`, `session-replay`); the loss surfaced only when the user asked to check. The run's lessons were added to `session-replay`, `session-archaeology`, and `tool-selection`, but several had no home.
+
+🩺 [DIAGNOSIS] A reconstruction is a divergent branch of history, not a superset of the target: to integrate it is to reconcile — a union with deliberate conflict resolution — not to overwrite or to fast-rebase. A deferred fix left unrecorded is a silent regression; "regenerate later" is a promise, not a state. And the merge mechanism (rebase vs squash) is a decision set by the delivery constraint, not by habit.
+
+🎯 [ROOT-CAUSE] Integration was assumed mechanical, and a known loss was deferred without a marker — scaffolding assumptions carried past the point where they still held.
+
+🔧 [FIX] Squash-merged the reconstruction in the clone only (`main` untouched; the user fast-forwards): `git merge --squash` onto the real `main` (`4c95271`), resolving the two conflicts by policy — `README.md` from the branch side, `HISTORY.md` as a date-sorted union of the two tails — landing one commit `feat: parse-back` whose parent is `main`. Then regenerated the catalog (restored `tool-selection` and a `Session forensics` section with `session-archaeology` and `session-replay`). Routed the run's lessons to their homes: added them to `session-replay`, `session-archaeology`, and `tool-selection`; left the rest with proposed homes. Details in git.
+
+💡 [LEARNING] Prioritised:
+1. **A reconstruction diverges — integrate by reconciliation** — union the two histories, keep the target's untouched files, resolve shared files deliberately (branch content for a regeneratable file, date-union for the log); never overwrite.
+2. **The merge mechanism follows the delivery constraint** — a result that must be one commit on the target, built in isolation, is a squash-merge, not a rebase.
+3. **A deferred fix is a silent regression** — record it as a `⏰ [REVISIT]`/TODO or verify before claiming done; "regenerate later" lost three catalog entries until a check.
+4. **`HISTORY.md` is chronological** — combining two histories is a date-sorted union, not an append.
+5. **A "check" commissions a report, not a change** — the verb separates findings from edits; a go turns one into the other.
+6. **Subject the plan's load-bearing assumption to a cheap check first** — the replay plan rested on a commit-based ancestor rated ~70–80%; it was false.
+7. **Keep the base ref current before integrating** — the clone's `origin/main` was stale; fetch and confirm the base first.
+
+♻️ [REFLECTION]
+
+Applied rules: session-replay (merge as reconciliation; isolation) · evaluation-report (entry as a unit; standalone; delta-check) · plan-build-workflow (grill the frontier first; the user owns the merge) · emoji-markers (closed set) · uncertainty-and-verification (labels) · tool-selection (mechanism by constraint).
+
+Strengths
+- ✅ The merge was rehearsed in the clone; `main` was never touched until the user's fast-forward.
+- ✅ Conflicts reduced to exactly the two predicted files; the `HISTORY.md` union was verified date-ordered and the seam checked.
+- ✅ Post-merge verification against the on-disk skills caught the catalog regression before it stood.
+- ✅ Each lesson was routed to a single home.
+
+Improvements
+- ⚠️ Resolved `README.md` to the branch side on a deferred "regenerate later" and nearly lost three entries; only a user-requested check found it. Fix: record the deferred drop and verify a merge against a source of truth before done. (evaluation-report / workflow)
+- ⚠️ Wrote the earlier `HISTORY.md` entry on an assumed go ("do the entry first"). Fix: a named first task orders work; it is not the go. (plan-build-workflow — recurrence)
+- ⚠️ Wrote scratch to `/tmp/opencode`, which is not writable, instead of `./.tmp/`. Fix: follow workspace hygiene. (workflow — recurrence)
+
+Proposed rules
+- 📌 Integrate a reconstruction by reconciliation; keep target-only files; resolve shared files deliberately. Implementation: `session-replay` (written).
+- 📌 Squash a reconstruction into one commit; the base-snapshot is scaffolding. Implementation: `session-replay` (written).
+- 📌 Record a deferred drop as a REVISIT, or verify before done. Implementation: `evaluation-report`.
+- 📌 Merge two histories as a date-sorted union. Implementation: `evaluation-report`.
+- 📌 A skill's catalog one-liner derives from its README's one-liner — keep them identical. Implementation: `audit-consistency` (planned) / `skill-authoring`.
+- 📌 Consider a read-grounded provenance label between verified and unverified. Implementation: `uncertainty-and-verification`.
+- 📌 Verify the base ref before integrating; a "check" is a report, not a change. Implementation: `workflow`.
+
+⏰ [REVISIT] Route the unhomed lessons into `evaluation-report`, `uncertainty-and-verification`, `workflow`, and `skill-authoring`/`audit-consistency` · `parse-back` is now on `main` — validate it in real sessions · approach (b) interactive replay stays open.

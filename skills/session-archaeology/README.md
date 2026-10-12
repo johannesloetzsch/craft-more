@@ -28,6 +28,16 @@ A reader holding one or more session exports can see how they relate to your cod
 - ordering
 - gap analysis
 
+### Limits of the record
+
+The export is evidence with blind spots — name them before trusting a claim:
+
+- **the base may be no commit at all** — a session can start from an uncommitted working tree; provenance by commit hash is inference, so diff the session's earliest full reads against candidate commits to find, or rule out, the base
+- **the log is incomplete** — a human edits out-of-band, with no recorded operation; a whole-file read that changes with no intervening op is a human-edit gap, not a tool op
+- **reads drop the trailing newline** — treat it as an artifact, not a content change, before drawing a conclusion
+- **operations are the mechanism; reads are the ground truth** — reconstruct and verify from whole-file reads
+- **a session is a branch of history, not necessarily an ancestor** — allow divergence between the session's tree and the repository's later main
+
 ### Related
 
 The exports are produced by a harness (for example, `opencode export`); read the files directly — query the JSON, never a session database. A repository's history log (for example, [HISTORY.md](../../HISTORY.md)) is written by [evaluation-report](../evaluation-report/).

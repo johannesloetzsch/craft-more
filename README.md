@@ -19,11 +19,16 @@ Status: ⚪ planned · 🟣 draft · 🔴 mock · 🟠 poc · 🟡 prototype · 
 - 🔴 [`workflow`](skills/workflow/) 🌱 — Read back, think in the open, review early — your goal, your plan, your every step; craft, not slop
 - 🔴 [`plan-build-workflow`](skills/plan-build-workflow/) 🌱 — One unit of work, done in the open: plan and grill it first, then build in small approved steps — nothing written without a go
 - ⚪ [`cost-budget-guardrails`](skills/cost-budget-guardrails/) 📄 — Token/permission budget, cheapest source first
+- 🔴 [`tool-selection`](skills/tool-selection/) 🌱 — Move towards the goal with the right instrument — deliberately chosen by requirements
 
 ### Research
 - ⚪ [`environment-discovery`](skills/environment-discovery/) 📄 — Resource-efficient, non-intrusive environment probing
 - 🔴 [`web-research`](skills/web-research/) 🌱 — Research strategy — set the goal first, then walk the source ladder from the cheapest to the most expensive source, naming each step along the way
 - ⚪ [`info-source-index`](skills/info-source-index/) 📄 — Entry point: where to look first
+
+### Session forensics
+- 🔴 [`session-archaeology`](skills/session-archaeology/) 🌱 — See how a codebase was built — read session exports alongside git history and the repository's history log to trace provenance, order, and gaps, with honest confidence
+- 🔴 [`session-replay`](skills/session-replay/) 🌱 — Rebuild what a session produced — reconstruct files and understanding from an export, choosing deliberately between 1:1 replay and interactive re-authoring, verified against the session's own records
 
 ### Learning loop
 - 🔴 [`evaluation-report`](skills/evaluation-report/) 🌱 — A structured report of finished work with built-in reflection — whose proposed rules feed skill-evolution
