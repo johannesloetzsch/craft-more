@@ -25,6 +25,9 @@ Status: ⚪ planned · 🟣 draft · 🔴 mock · 🟠 poc · 🟡 prototype · 
 - 🔴 `web-research` 🌱 — Research strategy — set the goal first, then walk the source ladder from the cheapest to the most expensive source, naming each step along the way
 - ⚪ `info-source-index` 📄 — Entry point: where to look first
 
+### Session forensics
+- 🔴 `session-archaeology` 🌱 — See how a codebase was built — read session exports alongside git history and the repository's history log to trace provenance, order, and gaps, with honest confidence
+
 ### Learning loop
 - 🔴 `evaluation-report` 🌱 — A structured report of finished work with built-in reflection — whose proposed rules feed skill-evolution
 - 🔴 `maturity-model` 🌱 — Make the maturity of a project — or any part of it — visible and honest: one status label from planned to mature, so quality claims are recognizable at a glance
