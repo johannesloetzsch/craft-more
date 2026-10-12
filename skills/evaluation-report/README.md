@@ -28,6 +28,8 @@ The single source of truth for the report entry format — logs reference it, ne
 
 Domain vocabulary per entry: 🤒 [SYMPTOM] → 🩺 [DIAGNOSIS] → 🎯 [ROOT-CAUSE] → 🔧 [FIX] → 💡 [LEARNING] → ♻️ [REFLECTION] → ⏰ [REVISIT]
 
+Entries are read by people who were not in the session: each entry must stand alone — names and context are introduced, session-only jargon explained, nothing assumed from memory.
+
 Status and action markers come from [emoji-markers](../emoji-markers/) — referenced, never duplicated.
 
 Every entry ends with a reflection, in this order:

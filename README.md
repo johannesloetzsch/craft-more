@@ -27,6 +27,7 @@ Status: ⚪ planned · 🟣 draft · 🔴 mock · 🟠 poc · 🟡 prototype · 
 
 ### Session forensics
 - 🔴 `session-archaeology` 🌱 — See how a codebase was built — read session exports alongside git history and the repository's history log to trace provenance, order, and gaps, with honest confidence
+- 🔴 `session-replay` 🌱 — Rebuild what a session produced — reconstruct files and understanding from an export, choosing deliberately between 1:1 replay and interactive re-authoring, verified against the session's own records
 
 ### Learning loop
 - 🔴 `evaluation-report` 🌱 — A structured report of finished work with built-in reflection — whose proposed rules feed skill-evolution

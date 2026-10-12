@@ -449,3 +449,52 @@ Proposed rules
 - 📌 [PIN] Read session exports as files, never via a session database. Implementation: `session-archaeology` (written).
 
 ⏰ [REVISIT] Validate `session-archaeology` by its first real use · add its `SKILL.md` when it leaves draft · the four PINs from the prior entry remain unfiled · load `customize-opencode` for the hard guard.
+
+---
+
+## 2026-10-12 · Ground truth, replay strategy, and the session-replay skill
+
+🤒 [SYMPTOM] A skill named `parse-back` — authored by a session on another machine — is absent from this repository, while that session's export (`h1x.json`, "lucky-garden") contains it and also rewrote several other files. Reconstructing it forced a first step with two very different general approaches: (a) **replay the session's recorded `write`/`edit` operations one-to-one** — mechanical, presumed cheaper, fidelity bounded by how faithfully edits are applied; (b) **interactive replay** — work through the export, absorb the session's intentions and progress, and re-author the skill with the user by grilling. We tried the assumed-cheaper (a) first, but the choice was deliberately kept open: (b) is just as interesting and useful. This entry is also the first writing of the rule that reflection entries must be understandable by people who were not in the session.
+
+🩺 [DIAGNOSIS] Verification had no method: a session export records the original session's operations and observations, but not its base commit — so we could not say whether a replay reproduced what the session ended with, nor whether replaying onto the current tree would conflict with commits made since. And the two approaches differed in what "done" means: (a) reproduces the artifact, (b) reproduces and explains the understanding.
+
+🎯 [ROOT-CAUSE] A session export is evidence, not proof — the reference for correctness is the session's own recorded observations, and "done" was not provable until a comparison against them was defined. Approach selection was also treated as a detail, though it determines cost, fidelity, and trust of the whole reconstruction.
+
+🔧 [FIX] The plan:
+- **Approach decision (step one, not rushed):** attempt (a) replay 1:1 — cheap, verifiable against ground truth, but fidelity rests on the applier's match policy. (b) interactive replay stays an explicitly open, equally valuable alternative, documented rather than skipped.
+- Replay (a) on a feature branch in a fresh clone under the ignored `.tmp/` directory, starting at the common ancestor commit (`3d58c07`); merging is a later, user-controlled step.
+- A new skill `session-replay` (🔴 mock) is authored in this repository first and documents how the replay tool is built; it opens with the approach decision; the tool itself stays out of the repository for review, and the clone run then refines the skill back in main.
+- Verification by ground-truth diff: compare the reconstruction against the export's own read of the file taken after the session's last edit (a complete 116-line read, `truncated=false`, exists; a later read shows 117 lines — working hypothesis: an editor-added trailing newline).
+- Conflict pre-check: intersect our changes since the ancestor with the files the session touched — only `HISTORY.md` and `README.md` overlap; `parse-back` and `communication-style` are new paths and cannot conflict.
+
+💡 [LEARNING] Prioritised:
+1. **Approach selection is the first step of any replay** — mechanical 1:1 and interactive re-authoring differ in cost, fidelity, and what "done" means; the cheaper one is tried first, the other stays open, never silently dropped.
+2. **Ground truth lives in the session's own observations** — a complete, non-truncated post-edit read is the verification reference, and its feasibility is checkable with read-only queries (stored text, window, truncation flag, timing).
+3. **Exports record no base commit** — provenance is inference from timing and commit-hash references, never proof.
+4. **Replay isolation separates reconstruction from merging** — merging stays a deliberate, user-controlled act.
+5. **The durable artifact is the method, not the tool** — the skill stays, the code is reviewed and discarded.
+6. **Conflict risk is an intersection** — our delta since the ancestor × the session's touched files.
+
+♻️ [REFLECTION]
+
+Applied rules: evaluation-report (entry as a unit, delta-check, new standalone rule) · session-archaeology (first real use seeded the replay plan) · plan-build-workflow (grill before build — design-principles grill delivered, answers pending) · emoji-markers (closed set) · uncertainty-and-verification (confidence labels on every claim)
+
+Strengths
+- ✅ Ground-truth verification proven feasible with read-only `jq` before any plan was fixed (complete read found, output stored, timing under `state.time`).
+- ✅ The approach choice was surfaced as a fork and the cheaper path labelled an attempt, not a commitment.
+- ✅ Every claim carried an honest confidence label (h1x follows HEAD: ~70–80%, inference not proof).
+- ✅ Replay isolated to a branch/clone — nothing proposed for the live tree; merge deferred to the user.
+- ✅ The new standalone rule was applied by writing this very entry against it.
+
+Improvements
+- ⚠️ Timings were first read from `.time` (all null) before discovering `.state.time`. Fix: inspect the part schema before assuming field names. (uncertainty-and-verification)
+- ⚠️ The two replay approaches were introduced but their standing was understated until the user called it out. Fix: record the decision — tried vs open — in the plan. (plan-build-workflow)
+
+Proposed rules
+- 📌 Approach selection is step one of a replay; never rush it — name the tried path and the explicitly open alternative. Implementation: `session-replay` (planned).
+- 📌 Ground-truth diff: verify a reconstruction against the session's own post-edit reads; report newline deltas. Implementation: `session-replay` (planned).
+- 📌 Conflict pre-check before any replay: intersect our delta since the ancestor with the session's touched files. Implementation: `session-replay` (planned).
+- 📌 Replay isolation: replay on a branch in a fresh clone at the common ancestor; merging is a separate user-controlled step. Implementation: `session-replay` / `workflow`.
+- 📌 Tools stay out of the repository; the skill documents the method. Implementation: `session-replay` (planned).
+
+⏰ [REVISIT] Approach (b) — interactive replay by grilling intent and progress — explicitly open · grill answers (design principles) → build tool → replay in the clone → verify with ground-truth diff → single commit on the branch → refine `session-replay` from the run · validate `session-archaeology` by its first real use.
