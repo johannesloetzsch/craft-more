@@ -2,19 +2,19 @@
 
 See the whole task at a glance — a live, marker-annotated outline opens every reply, so the goal, the settled facts, and the open questions are all visible in one look.
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 
-`parse-back` turns every answer into a structured readback: the first thing the reader sees is a parse of the request and the current work, as a nested outline. Each node carries a status marker from [emoji-markers](../emoji-markers/); remembered facts and new acknowledgements are told apart, and every open question stands out as the frontier. The prose then stays short — the outline carries the detail.
+`parse-back` turns every answer into a structured readback: the first thing the reader sees is a parse of the request and the current work, as a nested outline. Each node carries a status marker from [emoji-markers](../emoji-markers/README.md); remembered facts and new acknowledgements are told apart, and every open question stands out as the frontier. The prose then stays short — the outline carries the detail.
 
 ## Strategy (mock)
 
 ### Shape
 
-- The reply opens with a blank line, then the message separator (`---`, see [communication-style](../communication-style/)); the outline's root node is the next line, with no label, title, or sentence before it.
+- The reply opens with a blank line, then the message separator (`---`, see [communication-style](../communication-style/README.md)); the outline's root node is the next line, with no label, title, or sentence before it.
 - The parse-back is a **nested markdown outline**: each unit of work is a **node**, nested by containment; every further unit of work nests below the root.
-- Each node is **one short line** and carries a **start-marker**: `EMOJI [WORD] text`, drawn from [emoji-markers](../emoji-markers/).
+- Each node is **one short line** and carries a **start-marker**: `EMOJI [WORD] text`, drawn from [emoji-markers](../emoji-markers/README.md).
 - The reply **terminates at the active task's frontier**: on an open ❓ `[DECIDE]` or 🔐 `[APPROVE]` when a decision is pending, or on the settled node (✅ `[OK]` / 🏁 `[FINISH]`) when nothing is open — never on a bare body node.
 
 ### Telling the rounds apart
@@ -24,7 +24,7 @@ This is a standalone skill from the [craft-more](<../../README.md>) skill collec
 
 ### Start-markers: order and meaning
 
-These markers may open a node. Their **general** meanings live in [emoji-markers](../emoji-markers/); their **start-marker semantics** — what they mean when they open an outline node — live here. Within a parent, siblings appear in this order:
+These markers may open a node. Their **general** meanings live in [emoji-markers](../emoji-markers/README.md); their **start-marker semantics** — what they mean when they open an outline node — live here. Within a parent, siblings appear in this order:
 
 1. 📋 `[FINALIZE]` — a branch is settled and waits to be closed (it may depend on another branch or an 🔐 `[APPROVE]`)
 2. 📎 `[EVIDENCE]` — a confirmed fact carried from a previous round
@@ -111,6 +111,6 @@ Run before every send; fix the outline until each holds.
 
 ## Related
 
-- [emoji-markers](../emoji-markers/) — the state layer: the closed marker set and its meanings.
-- [communication-style](../communication-style/) — the style layer: the `---` separator and formatting.
-- [web-research](../web-research/) — the source ladder walked by 🔎 `[INSPECT]` nodes.
+- [emoji-markers](../emoji-markers/README.md) — the state layer: the closed marker set and its meanings.
+- [communication-style](../communication-style/README.md) — the style layer: the `---` separator and formatting.
+- [web-research](../web-research/README.md) — the source ladder walked by 🔎 `[INSPECT]` nodes.

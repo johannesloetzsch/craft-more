@@ -1,0 +1,40 @@
+/* Accent = the header search field background:
+   the header blue (#4051b5) under Material's 26% black overlay -> #2f3c86 */
+:root {
+  --md-accent-fg-color: #2f3c86;
+  --md-accent-fg-color--transparent: #2f3c861a;
+  --md-accent-bg-color: #fff;
+  --md-accent-bg-color--light: #ffffffb3;
+}
+
+/* Skill-category headings: make them read as section labels */
+.md-nav--primary .md-nav[data-md-level="1"] > .md-nav__list > .md-nav__item--section > .md-nav__link {
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-size: .62rem;
+  color: var(--md-primary-fg-color);
+}
+
+/* Emphasize the category that holds the current page */
+.md-nav--primary .md-nav__item--section.md-nav__item--active > .md-nav__link {
+  color: var(--md-accent-fg-color);
+}
+
+/* Table of contents: same colours as the section headings */
+.md-nav--secondary > .md-nav__title {
+  color: var(--md-primary-fg-color);
+}
+
+.md-nav--secondary .md-nav__item .md-nav__link {
+  color: var(--md-primary-fg-color);
+}
+
+.md-nav--secondary .md-nav__item .md-nav__link--active {
+  color: var(--md-accent-fg-color);
+}
+
+/* Indent skill links under their category heading (mirrors the TOC) */
+.md-nav--primary .md-nav[data-md-level="2"] > .md-nav__list > .md-nav__item > .md-nav__link {
+  padding-left: 0.7rem;
+}

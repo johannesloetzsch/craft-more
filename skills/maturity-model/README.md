@@ -2,7 +2,7 @@
 
 Make the maturity of a project — or any part of it — visible and honest: one status label from planned to mature, so quality claims are recognizable at a glance.
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 

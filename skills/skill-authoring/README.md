@@ -2,7 +2,7 @@
 
 Author new skills without drift — each one self-contained, reader-first, and every rule in a single home.
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 
@@ -30,7 +30,7 @@ Derived while authoring the first skill READMEs and still `mock`:
 - one-liner: the reader's outcome first, the mechanism last; ecosystem benefit at the end, if at all
 - section order: reader-first — outcome, then interaction, then mechanics; internal mechanism goes last or stays hidden
 - `## Goal` names what changes for the reader, phrased positively — how the skill works with them, not what breaks without it; `## Strategy` describes the means
-- standalone links: [craft-more](../../README.md) · [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+- standalone links: [craft-more](../../README.md) · [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 - language: English, English quotes ("…"), no language mix
 - paths: `~/`, never usernames or private info; when in doubt, grill it — assume nothing
 - harness-neutral: tool names stay out — say "web search", not `websearch`

@@ -2,6 +2,10 @@
 
 Detailed installation for opencode.
 
+## Warning
+
+It is early and first tested with opencode, so expect rough edges.
+
 ## Requirements
 
 - opencode (recent version). <!-- or alternatives… -->

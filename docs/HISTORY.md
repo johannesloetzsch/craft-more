@@ -5,7 +5,7 @@ English — this repo is public. Latest entries at the bottom (log semantics).
 
 ## Conventions
 
-Entry format — domain vocabulary, markers, and the reflection structure — is defined once in [evaluation-report](skills/evaluation-report/); this log references it, never duplicates it.
+Entry format — domain vocabulary, markers, and the reflection structure — is defined once in [evaluation-report](../skills/evaluation-report/README.md); this log references it, never duplicates it.
 
 ---
 
@@ -386,7 +386,7 @@ Proposed rules
 
 🎯 [ROOT-CAUSE] The always-on channel described the intent (`skills/<name>/SKILL.md`), not the reality (README-first drafts), so nothing was navigable from `AGENTS.md`.
 
-🔧 [FIX] Bootstrapped by reference instead: every catalog entry now links to its skill folder, and `AGENTS.md` links [README.md](README.md) and explains the README-first reality, the status labels, and where to start (`workflow`, `plan-build-workflow`). No `SKILL.md`, no duplication, independent of `skills.paths`. Validated in a real new session. Content details in git.
+🔧 [FIX] Bootstrapped by reference instead: every catalog entry now links to its skill folder, and `AGENTS.md` links [README.md](../README.md) and explains the README-first reality, the status labels, and where to start (`workflow`, `plan-build-workflow`). No `SKILL.md`, no duplication, independent of `skills.paths`. Validated in a real new session. Content details in git.
 
 💡 [LEARNING] Prioritised:
 1. **Bootstrap drafts by reference, not by the loader** — `AGENTS.md` → catalog → skill README; the docs carry the behaviour until `SKILL.md` files exist.

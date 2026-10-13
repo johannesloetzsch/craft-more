@@ -2,7 +2,7 @@
 
 Move towards the goal with the right instrument — deliberately chosen by requirements.
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 
@@ -53,5 +53,5 @@ Each choice carries its reason, and confidence follows the collection's existing
 
 ### Related
 
-- [language-selection](../language-selection/) — choosing the language of the thing the user is building; this skill covers the instruments used on the way there.
-- [environment-discovery](../environment-discovery/) — finding and supplying the tools an environment offers.
+- `language-selection` — choosing the language of the thing the user is building; this skill covers the instruments used on the way there.
+- `environment-discovery` — finding and supplying the tools an environment offers.

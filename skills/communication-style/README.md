@@ -2,7 +2,7 @@
 
 Give every message one predictable style — formatting, language, and names — so output stays easy to read and unambiguous.
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 

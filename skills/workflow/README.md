@@ -2,7 +2,7 @@
 
 Read back, think in the open, review early — your goal, your plan, your every step; craft, not slop.
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 
@@ -16,7 +16,7 @@ A whole session, not a single task: this skill keeps a long collaboration under 
 
 ### The session loop
 
-A session is a repeating loop of small units. A larger task is broken down into subtasks (divide and conquer), and each unit runs the same loop: plan → build → verify and hand back. The details of a single unit live in [plan-build-workflow](../plan-build-workflow/); this skill sequences the units. Only the commissioned work is done — see there for the scope rule. When one unit is done, the next planning phase begins immediately — the session never simply stays in build.
+A session is a repeating loop of small units. A larger task is broken down into subtasks (divide and conquer), and each unit runs the same loop: plan → build → verify and hand back. The details of a single unit live in [plan-build-workflow](../plan-build-workflow/README.md); this skill sequences the units. Only the commissioned work is done — see there for the scope rule. When one unit is done, the next planning phase begins immediately — the session never simply stays in build.
 
 ### Backlog instead of batch
 
@@ -24,11 +24,11 @@ When several tasks arrive at once, they become a numbered backlog: mirror them b
 
 ### Keeping the user in the loop
 
-- **Read back first.** Every answer opens with the [parse-back](../parse-back/) outline.
+- **Read back first.** Every answer opens with the [parse-back](../parse-back/README.md) outline.
 - **Think in the open when it helps.** Surface the reasoning for complex or ambiguous work; give just the result when it is simple.
 - **Review early.** No silent waiting — the user should be able to step in from the first line.
 
-The loop-breakers live in [interaction-guard](../interaction-guard/); this skill references them.
+The loop-breakers live in [interaction-guard](../interaction-guard/README.md); this skill references them.
 
 ### Missing skills
 

@@ -2,13 +2,19 @@
 
 One unit of work, done in the open: plan and grill it first, then build in small approved steps — nothing written without a go.
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 
 A unit of work runs in a fixed, reviewable order: the goal is sharpened by grilling before anything is written, each build step is approved, and the user stays in control of every step. Planning and building stay separate, so misunderstandings surface early and cheap.
 
 ## Strategy (mock)
+
+```mermaid
+flowchart LR
+  P(["Plan"]) --> B(["Build"]) --> V(["Verify and hand back"])
+  V -->|next unit| P
+```
 
 ### Phases
 
@@ -33,7 +39,7 @@ Each question is numbered and carries a recommended answer, in the shape `❓ [D
 - decisions belong to the user: put each to them and wait — never decide alone
 - the plan is done when the frontier is empty: every branch visited, nothing left silently assumed
 
-Default: show the whole frontier, ask one focused question concretely. On an explicit "grill-me" trigger, put the whole frontier per round with the harness's questioning tool. Render the frontier as a 🧲 `[STEER]` node in the [parse-back](../parse-back/): its ❓ `[DECIDE]` subnodes are the questions, grouped by topic, each short yet readable on its own — never prose in the node; longer context goes below.
+Default: show the whole frontier, ask one focused question concretely. On an explicit "grill-me" trigger, put the whole frontier per round with the harness's questioning tool. Render the frontier as a 🧲 `[STEER]` node in the [parse-back](../parse-back/README.md): its ❓ `[DECIDE]` subnodes are the questions, grouped by topic, each short yet readable on its own — never prose in the node; longer context goes below.
 
 The gate from Plan to Build is an explicit confirmation of shared understanding — a stated goal is not a go.
 
@@ -52,4 +58,4 @@ Do only what was explicitly asked — no extra interpretations. When it is uncle
 
 ### Handoff
 
-This skill owns the phase details for one unit of work. The meta-workflow [workflow](../workflow/) sequences units across a session (backlog instead of batch, night shift as an approved exception) and hands off here — both stay aware of the same phase sequence.
+This skill owns the phase details for one unit of work. The meta-workflow [workflow](../workflow/README.md) sequences units across a session (backlog instead of batch, night shift as an approved exception) and hands off here — both stay aware of the same phase sequence.

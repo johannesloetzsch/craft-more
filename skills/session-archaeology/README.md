@@ -2,7 +2,7 @@
 
 See how a codebase was built — read session exports alongside git history and the repository's history log to trace provenance, order, and gaps, with honest confidence.
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 
@@ -40,4 +40,4 @@ The export is evidence with blind spots — name them before trusting a claim:
 
 ### Related
 
-The exports are produced by a harness (for example, `opencode export`); read the files directly — query the JSON, never a session database. A repository's history log (for example, [HISTORY.md](../../HISTORY.md)) is written by [evaluation-report](../evaluation-report/).
+The exports are produced by a harness (for example, `opencode export`); read the files directly — query the JSON, never a session database. A repository's history log (for example, [HISTORY.md](../../docs/HISTORY.md)) is written by [evaluation-report](../evaluation-report/README.md).

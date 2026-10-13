@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="760" height="220" viewBox="0 0 760 220"
+     role="img" aria-labelledby="title desc">
+  <title id="title">craft-more</title>
+  <desc id="desc">An animated craft-more wordmark with four slogans that type in and clear from top to bottom.</desc>
+
+  <defs>
+    <!-- Chunky turbulence distorts only the advancing edge of the black wipe. -->
+    <!-- The level of noice can be fine-tuned using the scale-parameter. -->
+    <filter id="rough-edge"
+            x="-20%" y="-20%" width="140%" height="140%"
+            color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise"
+                    baseFrequency="0.15 0.4"
+                    numOctaves="1"
+                    seed="7"
+                    result="noise"/>
+      <feComponentTransfer in="noise" result="blocks">
+        <feFuncR type="discrete" tableValues="0 0 1 1"/>
+        <feFuncG type="discrete" tableValues="0 0 1 1"/>
+      </feComponentTransfer>
+      <feDisplacementMap in="SourceGraphic"
+                         in2="blocks"
+                         scale="10"
+                         xChannelSelector="R"
+                         yChannelSelector="G"/>
+    </filter>
+
+    <!-- White shows the text; the filtered black rectangle clears it. -->
+    <mask id="clear1" maskUnits="userSpaceOnUse" x="0" y="0" width="760" height="220">
+      <rect width="760" height="220" fill="white"/>
+      <rect class="wipe w1" x="0" y="0" width="760" height="220"
+            fill="black" filter="url(#rough-edge)"/>
+    </mask>
+    <mask id="clear2" maskUnits="userSpaceOnUse" x="0" y="0" width="760" height="220">
+      <rect width="760" height="220" fill="white"/>
+      <rect class="wipe w2" x="0" y="0" width="760" height="220"
+            fill="black" filter="url(#rough-edge)"/>
+    </mask>
+    <mask id="clear3" maskUnits="userSpaceOnUse" x="0" y="0" width="760" height="220">
+      <rect width="760" height="220" fill="white"/>
+      <rect class="wipe w3" x="0" y="0" width="760" height="220"
+            fill="black" filter="url(#rough-edge)"/>
+    </mask>
+    <mask id="clear4" maskUnits="userSpaceOnUse" x="0" y="0" width="760" height="220">
+      <rect width="760" height="220" fill="white"/>
+      <rect class="wipe w4" x="0" y="0" width="760" height="220"
+            fill="black" filter="url(#rough-edge)"/>
+    </mask>
+  </defs>
+
+  <style>
+    .word {
+      font: 700 58px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      fill: #111;
+      letter-spacing: -3px;
+    }
+
+    .variant {
+      opacity: 0;
+      animation: show 4s steps(1, end) infinite;
+    }
+
+    .hyphen    { opacity: 1; animation-delay: 0s; }
+    .backslash { animation-delay: -3s; }
+    .pipe      { animation-delay: -2s; }
+    .slash     { animation-delay: -1s; }
+
+    @keyframes show {
+      0%, 24.99% { opacity: 1; }
+      25%, 100%  { opacity: 0; }
+    }
+
+    .slogan {
+      font: 16px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      fill: #333;
+      clip-path: inset(0 100% 0 0);
+      animation: type 40s steps(42, end) infinite;
+    }
+
+    .s2 { animation-delay: -10s; }
+    .s3 { animation-delay: -20s; }
+    .s4 { animation-delay: -30s; }
+
+    /* Type in over 3 seconds, then stay revealed. */
+    @keyframes type {
+      0%    { clip-path: inset(0 100% 0 0); }
+      7.5%  { clip-path: inset(0 0 0 0); }
+      100%  { clip-path: inset(0 0 0 0); }
+    }
+
+    /*
+      Keep the wipe collapsed and invisible until 23%.
+      Then grow it down over the slogan from 23% to 25%.
+    */
+    .wipe {
+      opacity: 0;
+      transform-box: view-box;
+      transform-origin: 0 0;
+      animation: clear-down 40s linear infinite;
+    }
+
+    .w2 { animation-delay: -10s; }
+    .w3 { animation-delay: -20s; }
+    .w4 { animation-delay: -30s; }
+
+    @keyframes clear-down {
+      0%, 19.99% {
+        opacity: 0;
+        transform: scaleY(0);
+      }
+      20% {
+        opacity: 1;
+        transform: scaleY(0.7273);
+      }
+      25%, 100% {
+        opacity: 1;
+        transform: scaleY(0.9091);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .variant, .slogan, .wipe { animation: none; }
+      .hyphen { opacity: 1; }
+      .backslash, .pipe, .slash { opacity: 0; }
+      .s1 { clip-path: none; }
+      .s2, .s3, .s4 { opacity: 0; }
+    }
+  </style>
+
+  <!-- Terminal icon -->
+  <rect x="12" y="20" width="120" height="120" rx="31"
+        fill="none" stroke="#111" stroke-width="9"/>
+  <path d="M42 59 L66 80 L42 101"
+        fill="none" stroke="#111" stroke-width="9"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M75 101 H98"
+        fill="none" stroke="#111" stroke-width="9"
+        stroke-linecap="round"/>
+  <path d="M105 42 L109 53 L120 57 L109 61 L105 72 L101 61 L90 57 L101 53 Z"
+        fill="#111"/>
+
+  <!-- Animated wordmark -->
+  <text class="word variant hyphen" x="158" y="98">craft-more</text>
+  <text class="word variant backslash" x="158" y="98">craft\more</text>
+  <text class="word variant pipe" x="158" y="98">craft|more</text>
+  <text class="word variant slash" x="158" y="98">craft/more</text>
+
+  <!-- Slogans -->
+  <text class="slogan s1" mask="url(#clear1)" x="16" y="180">slop less, but vibe :) and craft more…</text>
+  <text class="slogan s2" mask="url(#clear2)" x="16" y="180">slop-less &amp;&amp; vibe|bat &amp;&amp; craft|more</text>
+  <text class="slogan s3" mask="url(#clear3)" x="16" y="180">less slop → better vibe → more craft</text>
+  <text class="slogan s4" mask="url(#clear4)" x="16" y="180">less slop, a better view, more craft — tools that show how we learn together</text>
+</svg>
+

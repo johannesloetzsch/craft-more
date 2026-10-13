@@ -2,7 +2,7 @@
 
 Research strategy — set the goal first, then walk the source ladder from the cheapest to the most expensive source, naming each step along the way.
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 
@@ -37,5 +37,5 @@ Research with this skill starts from a precise goal and follows a structured pat
 - core vs. nice: nice-to-haves are parked until the core question is closed
 - live test beats static docs: verify by running or asking, not by forensics
 - results are hypotheses, not facts: check age and version against our setup, confirm by a live trigger before claiming
-- negative statements: "not found" ≠ "doesn't exist", following [uncertainty-and-verification](../uncertainty-and-verification/)
+- negative statements: "not found" ≠ "doesn't exist", following [uncertainty-and-verification](../uncertainty-and-verification/README.md)
 - method serves the goal: every step relates back to the core question

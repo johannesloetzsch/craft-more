@@ -1,0 +1,96 @@
+site_name: craft-more skills
+site_description: less slop → better vibe → more craft
+
+docs_dir: ..
+
+repo_url: https://github.com/johannesloetzsch/craft-more
+repo_name: johannesloetzsch/craft-more
+
+nav:
+  - About:
+      - About: README.md
+      - Why: docs/WHY.md
+  - Getting started: docs/GETTING_STARTED.md
+  - Install: docs/INSTALL.md
+  - Skills:
+      - Catalog: docs/CATALOG.md
+      - Core workflow:
+          - Workflow: skills/workflow/README.md
+          - Plan-build workflow: skills/plan-build-workflow/README.md
+          - Tool selection: skills/tool-selection/README.md
+      - Research:
+          - Web research: skills/web-research/README.md
+      - Session forensics:
+          - Session archaeology: skills/session-archaeology/README.md
+          - Session replay: skills/session-replay/README.md
+      - Learning loop:
+          - Evaluation report: skills/evaluation-report/README.md
+          - Maturity model: skills/maturity-model/README.md
+      - Meta & wrap-up:
+          - Skill authoring: skills/skill-authoring/README.md
+          - Skill evolution: skills/skill-evolution/README.md
+      - Behavior & guardrails:
+          - Uncertainty and verification: skills/uncertainty-and-verification/README.md
+          - Interaction guard: skills/interaction-guard/README.md
+      - Communication & style:
+          - Parse-back: skills/parse-back/README.md
+          - Emoji markers: skills/emoji-markers/README.md
+          - Communication style: skills/communication-style/README.md
+  - Development:
+      - History: docs/HISTORY.md
+      - Maturity: docs/MATURITY.md
+      - Agent instructions: AGENTS.md
+
+theme:
+  name: material
+  logo: docs/img/logo.svg
+  features:
+    - navigation.top
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.indexes
+    - navigation.footer
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: custom
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_css:
+  - docs/stylesheets/colors.css
+  - docs/stylesheets/layout.css
+
+extra_javascript:
+  - docs/javascripts/mermaid.min.js
+
+extra:
+  generator: false
+
+exclude_docs: |
+  flake.nix
+  flake.lock
+  result
+  docs/mkdocs.yml
+  docs/nix/**
+  skills/**/SKILL.md
+  **/PROPOSED.md

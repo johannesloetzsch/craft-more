@@ -1,8 +1,8 @@
 # evaluation-report
 
-A structured report of finished work with built-in reflection — whose proposed rules feed [skill-evolution](../skill-evolution/).
+A structured report of finished work with built-in reflection — whose proposed rules feed [skill-evolution](../skill-evolution/README.md).
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 
@@ -20,7 +20,7 @@ Planned approach, not implemented yet:
   - strengths with evidence
   - improvements with fixes
   - proposed rules with an implementation target
-- reports are invoked by the [workflow](../workflow/) meta-skill; their proposed rules are the input for [skill-evolution](../skill-evolution/)
+- reports are invoked by the [workflow](../workflow/README.md) meta-skill; their proposed rules are the input for [skill-evolution](../skill-evolution/README.md)
 
 ## Entry format
 
@@ -30,7 +30,7 @@ Domain vocabulary per entry: 🤒 [SYMPTOM] → 🩺 [DIAGNOSIS] → 🎯 [ROOT-
 
 Entries are read by people who were not in the session: each entry must stand alone — names and context are introduced, session-only jargon explained, nothing assumed from memory.
 
-Status and action markers come from [emoji-markers](../emoji-markers/) — referenced, never duplicated.
+Status and action markers come from [emoji-markers](../emoji-markers/README.md) — referenced, never duplicated.
 
 Every entry ends with a reflection, in this order:
 - applied rules
@@ -38,11 +38,11 @@ Every entry ends with a reflection, in this order:
 - improvements (each with a fix)
 - proposed rules (each with an implementation target)
 
-This collection's [HISTORY.md](../../HISTORY.md) is the running log of this format.
+This collection's [HISTORY.md](../../docs/HISTORY.md) is the running log of this format.
 
 ## Writing an entry
 
-An entry is written like a unit of work — see [plan-build-workflow](../plan-build-workflow/). The steps that have proven useful:
+An entry is written like a unit of work — see [plan-build-workflow](../plan-build-workflow/README.md). The steps that have proven useful:
 
 1. reflect on the session and collect the candidate lessons
 2. classify each against the existing log: already recorded, changed, or new
@@ -53,4 +53,4 @@ An entry is written like a unit of work — see [plan-build-workflow](../plan-bu
 
 Entries hold meta-level lessons for future collaboration; content changes live in git, not here.
 
-A reflection exists to find gaps; its proposed rules are the backlog — a running requirements analysis. After writing, triage each rule: if it is implementable now — its home exists and no questions are open — propose the extension concretely and grill it before writing; otherwise it stays in the backlog. Deciding where a rule belongs is [skill-evolution](../skill-evolution/); persisting it is [skill-authoring](../skill-authoring/).
+A reflection exists to find gaps; its proposed rules are the backlog — a running requirements analysis. After writing, triage each rule: if it is implementable now — its home exists and no questions are open — propose the extension concretely and grill it before writing; otherwise it stays in the backlog. Deciding where a rule belongs is [skill-evolution](../skill-evolution/README.md); persisting it is [skill-authoring](../skill-authoring/README.md).

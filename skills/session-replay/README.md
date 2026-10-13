@@ -2,7 +2,7 @@
 
 Rebuild what a session produced — reconstruct files and understanding from an export, choosing deliberately between 1:1 replay and interactive re-authoring, verified against the session's own records.
 
-This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../GETTING_STARTED.md) · [Install](../../INSTALL.md)
+This is a standalone skill from the [craft-more](<../../README.md>) skill collection. Install and usage: [Getting started](../../docs/GETTING_STARTED.md) · [Install](../../docs/INSTALL.md)
 
 ## Goal
 
@@ -12,7 +12,7 @@ A reader holding a session export can reconstruct missing or old state — and c
 
 ### Step 0 — Reconnaissance
 
-Read the session and the tree first: [session-archaeology](../session-archaeology/) establishes provenance, order, and gaps. Referenced here, not restated.
+Read the session and the tree first: [session-archaeology](../session-archaeology/README.md) establishes provenance, order, and gaps. Referenced here, not restated.
 
 ### Step 1 — The approach decision
 
@@ -51,6 +51,6 @@ Merging is reconciliation, not overwrite: the reconstructed tree may parallel th
 
 ### Related
 
-- [session-archaeology](../session-archaeology/) — Step 0: provenance, order, gaps
-- [uncertainty-and-verification](../uncertainty-and-verification/) — the reused confidence labels
-- [plan-build-workflow](../plan-build-workflow/) — grilling is the default planning mode
+- [session-archaeology](../session-archaeology/README.md) — Step 0: provenance, order, gaps
+- [uncertainty-and-verification](../uncertainty-and-verification/README.md) — the reused confidence labels
+- [plan-build-workflow](../plan-build-workflow/README.md) — grilling is the default planning mode

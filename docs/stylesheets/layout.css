@@ -1,0 +1,21 @@
+/* Header logo: the brand glyph is near-black (#111); render it white on the
+   indigo header without altering the canonical SVG. */
+.md-header__button.md-logo img {
+  filter: brightness(0) invert(1);
+}
+
+/* Pull the site title closer to the logo. The logo only displays at ≥1220px.
+   Scoped to [dir=ltr] to match — and override — the theme's own
+   `[dir=ltr] .md-header__title{margin-left:1rem}` with equal specificity,
+   which wins because extra_css loads after main.css. */
+@media screen and (min-width: 76.25em) {
+  [dir="ltr"] .md-header__title {
+    margin-left: 0.2rem;
+  }
+}
+
+/* The meta footer row would hold only an empty copyright notice; collapse it
+   so the footer is a single navigation row. */
+.md-footer-meta {
+  display: none;
+}
