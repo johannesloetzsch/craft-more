@@ -826,3 +826,38 @@ Proposed rules
 - 📌 Read a session export in the slices a question needs, never whole. Implementation: `session-archaeology`.
 
 ⏰ [REVISIT] Validate the always-on guard and the sharpened readback in a real fresh session · choose the opener guard (A/B/C) · the config-level break (plan-mode enforcement / shell-as-output block) via `customize-opencode` · the staged changes await the user's commit.
+
+---
+
+## 2026-10-13 · Testing the boot routine: two edges named
+
+🤒 [SYMPTOM] The session's goal was to test the boot routine itself (`AGENTS.md` §Session start). The opening block ran — greeting, parse-back, STEER frontier, minimal load — but two edges had no rule: where the greeting sits relative to the parse-back, and how a first message that already carries a request (here a trivial "what time is it?") is handled before or at boot. The harness also opened with a generic request before the boot sequence began.
+
+🩺 [DIAGNOSIS] The session-start rules described the happy path — greet, load, end on STEER — and left the edges unnamed. Both surfaced only because the first message arrived before boot: exactly the case the rules did not name.
+
+🎯 [ROOT-CAUSE] A rule written for the common flow decides its edges by default. An unnamed edge is not a settled one.
+
+🔧 [FIX] `AGENTS.md` gained two rules and one marker note (3 lines added, 2 removed), settled by grilling (eleven decisions, three rounds) before the write: the one-line greeting may precede the parse-back — the sole boot-time exception to the parse-back-first rule; and a pre-existing user request is answered right after the parse-back — trivial ones immediately (a tool call allowed), otherwise planning mode with no further calls, and a goal-bearing request becomes a 🚧 [CHECK] until the boot grilling promotes it to the 🏁 [FINISH].
+
+💡 [LEARNING] Prioritised:
+1. **Name a rule's edges, not only its happy path** — a boot rule that assumes "first reply, no prior input" decides the real first message by accident.
+2. **The boot split is trivial vs goal-bearing** — a trivial ask may be answered at once; a goal becomes a CHECK to grill.
+3. **Testing the rules is a legitimate session goal** — it turns an untested routine into filed edges.
+
+♻️ [REFLECTION]
+
+Applied rules: plan-build-workflow (grill before write; proposal → content-Go → measured write) · evaluation-report (entry as a unit) · emoji-markers (closed set) · parse-back · tool-selection (requirement before instrument) · interaction-guard (reply is the message)
+
+Strengths
+- ✅ Real grilling: eleven numbered decisions across three rounds, each with a recommended answer, before any write. (plan-build-workflow)
+- ✅ Measured count held: 3+/2− prepared, 3+/2− live. (plan-build-workflow)
+- ✅ The fix stayed one file, at the rule's home (the user chose AGENTS.md). (skill-authoring)
+
+Improvements
+- ⚠️ The boot boundary was undefined until asked; the fix had to add it. Fix: name a rule's boundary when it is filed. (skill-authoring)
+
+Proposed rules
+- 📌 Name a rule's edges (prior-state and boundary cases) when it is filed. Implementation: `skill-authoring`.
+- 📌 State the boot boundary in the boot rule: the minimal load is the phase where "no tool call" applies. Implementation: `AGENTS.md` §Session start.
+
+⏰ [REVISIT] The harness opening a session with a generic request before boot — decide whether/how to change it.

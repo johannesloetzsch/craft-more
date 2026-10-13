@@ -10,7 +10,7 @@ Keep the collaboration under the user's control: answer in the reply, call tools
 ## Breakers
 
 - **The reply is the message.** A tool observes or acts; it never carries the answer.
-- **Requirement before instrument.** Name what the step needs before the first tool call; if the prompt alone answers, call nothing. (Choosing the instrument: [tool-selection](../tool-selection/).)
+- **Requirement before instrument.** Name what the step needs before the first tool call; if the prompt alone answers, call nothing — except the session boot, whose load is always required. (Choosing the instrument: [tool-selection](../tool-selection/).)
 - **`STOP` means halt.** An explicit stop → zero tool calls next reply, text only, then ask what changed.
 - **A repeated correction is a stop.** Corrected twice on the same thing → halt and ask; never act again.
 - **No long local loops.** Repeated same-direction calls with no user-visible report → stop and hand back.

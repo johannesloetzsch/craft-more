@@ -103,7 +103,7 @@ Only the markers above may open a node.
 
 Run before every send; fix the outline until each holds.
 
-- **Opening (fires first).** The parse-back is the first content of the reply, and its opening matches [§Shape](#shape): a blank line, then `---`, then the root node. It fires before anything else is written, so it must survive compaction.
+- **Opening (fires first).** The parse-back is the first content of the reply, and its opening matches [§Shape](#shape): a blank line, then `---`, then the root node. It fires before anything else is written, so it must survive compaction. A reply with no parse-back opener is malformed.
 - **Approval.** Every node that proposes an action (write, delete, run) is carried by an open 🔐 `[APPROVE]`. If a proposed action lacks one, add it or drop the action.
 <!--
 - **Terminal.** The reply ends at the active task's frontier: on an open ❓ `[DECIDE]` or 🔐 `[APPROVE]` when a decision is pending, otherwise on the settled node (✅ `[OK]` / 🏁 `[FINISH]`) — never on a bare body node.
