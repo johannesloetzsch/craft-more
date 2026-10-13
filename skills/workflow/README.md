@@ -28,7 +28,7 @@ When several tasks arrive at once, they become a numbered backlog: mirror them b
 - **Think in the open when it helps.** Surface the reasoning for complex or ambiguous work; give just the result when it is simple.
 - **Review early.** No silent waiting — the user should be able to step in from the first line.
 
-Until the planned `interaction-guard` skill exists, this skill hosts these working rules; once it is filled, they move there and this skill references them.
+The loop-breakers live in [interaction-guard](../interaction-guard/); this skill references them.
 
 ### Missing skills
 

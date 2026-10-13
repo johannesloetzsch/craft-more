@@ -747,3 +747,82 @@ Proposed rules
 - 📌 Verify the base ref before integrating; a "check" is a report, not a change. Implementation: `workflow`.
 
 ⏰ [REVISIT] Route the unhomed lessons into `evaluation-report`, `uncertainty-and-verification`, `workflow`, and `skill-authoring`/`audit-consistency` · `parse-back` is now on `main` — validate it in real sessions · approach (b) interactive replay stays open.
+
+---
+
+## 2026-10-13 · The readback opener: named in the always-on channel, not shaped
+
+🤒 [SYMPTOM] A casual working session ran every reply with paragraph markers but no readback outline — and, in the very reply that proposed filing the fix, the leading separator was dropped again: the message opened on the root node with no blank line + `---`. `AGENTS.md`'s output section named "the parse-back outline" without stating its shape, so the always-on channel carried a pointer to the rule, not the rule. The omission surfaced only when the user asked what the repo says about "read-back"; a self-audit then reported the protocol had not been followed, and the user caught the missing `---` immediately after.
+
+🩺 [DIAGNOSIS] Two forms of one failure. (1) The readback shape was filed (in `parse-back`) and referenced (in `AGENTS.md`), yet did not act — the always-on channel reproduced only the part recoverable from memory (the marker habit) and dropped the part that required loading the skill (the outline-first shape). (2) The `---` opener — a content-free prelude emitted before any reasoning — was dropped even while being discussed, because its only justification is conditional ("otherwise the separator glues to the previous message") and, in a chat UI where messages are discrete blocks, that failure never shows. Both are rules carried by prose, with nothing an action depends on.
+
+🎯 [ROOT-CAUSE] The always-on channel states the rule at the wrong resolution and the opener at the wrong necessity: a name ("the parse-back outline") is assumed to carry its shape, and a scaffold with no semantic content and a conditional rationale is re-derived from attention every reply. A pointer is not a shape; a named rule is not a load-bearing one.
+
+🔧 [FIX] Sharpened `AGENTS.md` §Output marker protocol from the name to the shape: blank line → `---` → label-free root → nested one-line `EMOJI [WORD]` nodes → terminal node, keeping `parse-back`/`emoji-markers` as the source of record (one line, +1/−1). The opener was corrected live in the next reply. Options for a durable opener guard were analysed but not yet chosen: (A) an output hook/plugin that prepends `\n---\n` when absent, (B) unconditional wording that splits rationale from rule, (C) an atomic first-line `---` token.
+
+💡 [LEARNING] Prioritised:
+1. **An always-on pointer must carry enough of a rule's shape to be applied without the skill loaded** — a name is not a shape.
+2. **A content-free scaffold with a conditional rationale gets dropped** — state conventions unconditionally and decouple them from the failure they prevent; better, give them a mechanism.
+3. **Encode the head, not just the tail** — the marker discipline was reproducible from memory; the outline-first shape and the opener were not.
+4. **Mechanisms outlast sentences (recurrence)** — the opener has no gate, so it degrades exactly when replies are long.
+
+♻️ [REFLECTION]
+
+Applied rules: interaction-guard (reply is the message; requirement before instrument) · parse-back (readback shape; one line per node; §Opening audit) · communication-style (message separator) · emoji-markers (closed set) · evaluation-report (entry as a unit) · plan-build-workflow (approval before write)
+
+Strengths
+- ✅ The readback gap was self-reported, not forced by a reminder. (parse-back / interaction-guard)
+- ✅ The `AGENTS.md` change was proposed, approved ("go 1 line"), applied as one deterministic edit, and verified with `git diff` (+1/−1). (plan-build-workflow / uncertainty-and-verification)
+- ✅ The dropped opener was diagnosed structurally — conditional rationale plus no mechanism — instead of patched with another reminder.
+
+Improvements
+- ⚠️ The readback was under-applied through the session's opening turns — markers without outline. Fix: the always-on pointer now states the shape. (AGENTS.md — applied)
+- ⚠️ The `---` opener dropped in the reply proposing its own fix, then flagged by the user. Fix: choose a mechanism (A) or unconditional wording (B/C). (communication-style / no home yet)
+
+Proposed rules
+- 📌 An always-on doc that points to a behaviour must state enough of its shape to be applied without the skill loaded. Implementation: `skill-authoring` / `parse-back`.
+- 📌 State the message-separator convention unconditionally; keep its rationale separate. Implementation: `communication-style`.
+- 📌 Guarantee the opener mechanically (output hook), not by reminder. Implementation: `customize-opencode` config guard (planned).
+
+⏰ [REVISIT] Choose the opener guard (A/B/C) · validate the sharpened `AGENTS.md` line in a fresh session (does the readback + opener appear from the first turn?) · the `AGENTS.md` edit is uncommitted.
+
+---
+
+## 2026-10-13 · Filling the interaction guard: a rule that must hold from the first prompt
+
+🤒 [SYMPTOM] A reconstructed session export (`shiny-harbor`, "Greeting") showed an agent that started tool use on its own — routing "show your thinking" through `bash echo`/`python3` — and then could not be steered off it: three escalating corrections ("be quicker", "this takes too long", "stop using tools") each drew more tool calls, and only the bare word `stop.` ended it. Across two tasks it made roughly forty calls and never delivered the work. In the repo the same failure had already been logged (`2026-10-12 · The tool-loop`) and a home promised (`interaction-guard`) — but the home was still empty, and the failure recurred.
+
+🩺 [DIAGNOSIS] The rules existed but did not act. (1) They lived in `workflow`, which a fresh session never loads — the export's agent opened `emoji-markers`/`parse-back` and never `workflow`, so the rules were never in play. (2) They were sentences, not breakers: nothing gated a tool call or stopped a loop, so each correction was read as a new task to tool through rather than a signal to halt.
+
+🎯 [ROOT-CAUSE] A rule that must hold from the first prompt was filed only where a loaded skill could reach it, and carried as a name rather than an applied shape. It needed an always-on channel or a mechanism.
+
+🔧 [FIX] Finished the promised skill and made its essentials always-on: a thin `AGENTS.md` `## Interaction guard` section (the reply is the message; requirement before instrument; `STOP` = zero tool calls; a repeated correction halts), a new `skills/interaction-guard/` with a README and a `SKILL.md`, the catalog line moved ⚪→🔴, and `workflow`'s promise replaced by a live reference. A follow-up session validated the target: `hi`, "tell me about you", and "what skills did you load" drew zero tool calls (the failed session had opened five files), tools appeared only for a question that needed the repo, the write was gated by 🔐 `[APPROVE]`, and the read-back omission was self-reported.
+
+💡 [LEARNING] Prioritised:
+1. **A fresh session has nothing loaded** — a behaviour that must hold from line one lives in the always-on channel or a mechanism, never only in a skill.
+2. **Mechanisms outlast sentences** — encode breakers, not reminders; a rule named and never applied is not a rule.
+3. **The failure is not the tool call but the failure to stop** — a correction is a signal to stop and re-read, never a new task to tool through.
+4. **A pointer is not a shape** — naming a rule does not carry its applied form (see the readback entry above).
+5. **Read forensics in slices** — name the slice a question needs; never load a whole export.
+
+♻️ [REFLECTION]
+
+Applied rules: interaction-guard (reply is the message; requirement before instrument) · session-archaeology (diagnose from the export, not a re-run) · tool-selection (choose the always-on channel by requirement) · plan-build-workflow (proposal → go → write; the plan/build gate held) · emoji-markers (closed set) · uncertainty-and-verification (verify before claiming)
+
+Strengths
+- ✅ The failure was diagnosed from its own export with targeted queries and mapped to the repo's existing entry before any change — the fix finished a promise instead of inventing one. (session-archaeology / skill-evolution)
+- ✅ "Go" arrived while in plan mode and was refused until the mode switched; the edits were then verified with `git diff`. (plan-build-workflow / interaction-guard)
+- ✅ The validating session separated the fixed part (gratuitous tool onset) from the residual (readback shape, invented marker labels) rather than claiming a clean pass. (uncertainty-and-verification)
+
+Improvements
+- ⚠️ The plan was sized before the binding constraint — fresh-session reachability — was stated. Fix: name the constraint before sizing the fix. (plan-build-workflow)
+- ⚠️ The export's "problem" was guessed before the user was asked; the user's framing (tool use began and recovery failed) was sharper. Fix: ask which problem before analysing one. (communication-style)
+- ⚠️ A contradiction in the request ("do 4 later" vs "1+2+4 now") was flagged rather than resolved first. Fix: resolve a load-bearing contradiction before proceeding. (interaction-guard)
+
+Proposed rules
+- 📌 A rule that must hold from the first prompt is stated in its applied shape in the always-on channel, or given a mechanism. Implementation: `skill-authoring` / `parse-back`.
+- 📌 The reply is the message; a tool observes or acts, never carries it. Implementation: `interaction-guard` (written).
+- 📌 A repeat correction halts the run — stop and re-read, never act again. Implementation: `interaction-guard` (written).
+- 📌 Read a session export in the slices a question needs, never whole. Implementation: `session-archaeology`.
+
+⏰ [REVISIT] Validate the always-on guard and the sharpened readback in a real fresh session · choose the opener guard (A/B/C) · the config-level break (plan-mode enforcement / shell-as-output block) via `customize-opencode` · the staged changes await the user's commit.

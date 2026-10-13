@@ -43,14 +43,14 @@ Status: ⚪ planned · 🟣 draft · 🔴 mock · 🟠 poc · 🟡 prototype · 
 ### Behavior & guardrails
 - 🔴 [`uncertainty-and-verification`](skills/uncertainty-and-verification/) 🌱 — Verify whenever the actual purpose requires it — a protocol for keeping a shared, honest picture of how valid the information we process is
 - ⚪ [`step-sequencing`](skills/step-sequencing/) 📄 — Order steps for resource efficiency and interactivity
-- ⚪ [`interaction-guard`](skills/interaction-guard/) 📄 — Avoid long local loops; escalate to the user
+- 🟠 [`interaction-guard`](skills/interaction-guard/) 📡 — Keep the reply and the tool channel separate — answer in the reply, call a tool only for a named requirement, and stop the moment the user says so
 
 ### Audit
 - ⚪ [`audit-consistency`](skills/audit-consistency/) 📄 — Check the collection against its own conventions (headings, quotes, paths, links, catalog)
 
 ### Communication & style
-- 🔴 [`parse-back`](skills/parse-back/) 🌱 — See the whole task at a glance — a live, marker-annotated outline opens every reply: goal, settled facts, and open frontier in one look
-- 🟢 [`emoji-markers`](skills/emoji-markers/) 🏁 — A fixed marker vocabulary: one status marker (emoji plus uppercase word) tags each paragraph and each parse-back node
+- 🔴 [`parse-back`](skills/parse-back/) 🌱 — See the whole task at a glance — a live, marker-annotated outline opens every reply, so the goal, the settled facts, and the open questions are all visible in one look
+- 🟢 [`emoji-markers`](skills/emoji-markers/) 🏁 — A fixed marker vocabulary for conversational output — one status marker (emoji plus uppercase word) tags each paragraph, and each parse-back node
 - 🔴 [`communication-style`](skills/communication-style/) 🌱 — Give every message one predictable style — formatting, language, and names — so output stays easy to read and unambiguous
 - ⚪ [`language-selection`](skills/language-selection/) 📄 — Choose programming languages with justification
 - ⚪ [`coding-style`](skills/coding-style/) 📄 — Coding style conventions
