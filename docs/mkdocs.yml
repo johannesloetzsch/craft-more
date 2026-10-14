@@ -1,6 +1,9 @@
 site_name: craft-more skills
 site_description: less slop → better vibe → more craft
 
+# Supplied by the build (see the CD pipeline); without it, no sitemap.
+site_url: !ENV SITE_URL
+
 docs_dir: ..
 
 repo_url: https://github.com/johannesloetzsch/craft-more

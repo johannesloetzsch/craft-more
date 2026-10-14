@@ -29,6 +29,17 @@
         };
       });
 
+      # Parameterised entry point, e.g.
+      #   (builtins.getFlake …).lib.x86_64-linux.mkDocs "https://example.org/"
+      lib = forAllSystems (system: {
+        mkDocs =
+          siteUrl:
+          import ./docs/nix/package.nix {
+            pkgs = nixpkgs.legacyPackages.${system};
+            inherit self version siteUrl;
+          };
+      });
+
       devShells = forAllSystems (system: {
         docs = import ./docs/nix/devShell.nix {
           pkgs = nixpkgs.legacyPackages.${system};

@@ -1,0 +1,38 @@
+name: cd
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    env:
+      SITE_URL: https://johannesloetzsch.github.io/craft-more/
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: actions/configure-pages@v5
+      - name: Build site
+        run: |
+          nix build --impure --expr \
+            '(builtins.getFlake (toString ./.)).lib.x86_64-linux.mkDocs (builtins.getEnv "SITE_URL")' \
+            --out-link result
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: result
+      - id: deploy
+        uses: actions/deploy-pages@v4

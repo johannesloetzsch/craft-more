@@ -3,6 +3,7 @@
   pkgs,
   self,
   version,
+  siteUrl ? null,
 }:
 let
   python = import ./lib/pythonDeps.nix { inherit pkgs; };
@@ -13,6 +14,7 @@ pkgs.stdenvNoCC.mkDerivation {
   inherit version;
   src = self;
   nativeBuildInputs = [ python ];
+  env = pkgs.lib.optionalAttrs (siteUrl != null) { SITE_URL = siteUrl; };
   buildPhase = ''
     runHook preBuild
     mkdocs build --strict --config-file docs/mkdocs.yml --site-dir "$out"
