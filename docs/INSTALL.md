@@ -1,63 +1,61 @@
 # Install
 
-Detailed installation for opencode.
+If you want to test craft-more without installing it permanently, consider the options at:
+
+[**Getting started**](GETTING_STARTED.md){ .md-button }
+
 
 ## Warning
 
-It is early and first tested with opencode, so expect rough edges.
+Craft-more is [in an early state](MATURITY.md). Not every feature is expected to fully work now.
+
+> ⚠️ Warning: While craft-more tries to provide best practices, it only delivers skills running with the same privileges as your other prompts. Access control can only be provided by tools and not by skills. Don't expect craft-more to offer any additional layer of **security** for your host system and user profile! To protect your users' data and your system's integrity, please **use recommended sandboxes**. You should at least run your coding agent as an unprivileged user without access to private data of your other system user accounts. Better run it in an **isolated virtual machine**.
+
 
 ## Requirements
 
-- opencode (recent version). <!-- or alternatives… -->
+The skills provided by craft-more should work on **any coding agent** / harness.
 
-<!-- step0: download to ~/src/craft-more or use a reference to the online repo -->
+Configuration will depend on the tools you use. The following instructions describe the configuration for [**opencode**](https://opencode.ai/) on Unix / Linux / WSL.
 
-## 1. Register the skills
 
-Add a `skills` block to your opencode config. `skills.paths` entries are directories scanned recursively for `**/SKILL.md`:
+## Download & Configuration
 
-<!--
-```jsonc
+For permanent installation of craft-more, clone it into a local directory of your choice:
+
+```bash
+cd ~/Documents/src/
+git clone https://github.com/johannesloetzsch/craft-more
+```
+
+To configure it **always-on** for a user, edit **`~/.config/opencode/opencode.jsonc`**:
+
+```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "skills": {
-    "paths": ["~/src/craft-more/skills"]
-  }
+  "default_agent": "plan",
+  "skills": [
+    "~/Documents/src/craft-more/skills"
+  ],
+  "instructions": [
+    "~/Documents/src/craft-more/AGENTS.md"
+  ]
 }
 ```
 
--->
 
-Config locations:
+## Restart and debugging
 
-- Global: `~/.config/opencode/opencode.jsonc`
-- Project: `./opencode.json` or `.opencode/opencode.json`
+Config is loaded once at startup and is not hot-reloaded. After restarting opencode, craft-more should greet you.
 
-## Always-on rules
-
-Skills are loaded on demand, so a rule applies only when its skill triggers. To apply rules in every session, use instructions.
-
-### A) Project `AGENTS.md`
-
-opencode auto-gathers `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/`, `.cursorrules`, and `.github/copilot-instructions.md`. Running opencode with the working directory inside this repo auto-loads `AGENTS.md` — no config entry needed.
-
-### B) Global instructions
-
-Reference the file explicitly so it loads everywhere:
-
-```jsonc
-{
-  "$schema": "https://opencode.ai/config.json",
-  "instructions": ["~/src/craft-more/AGENTS.md"]
-}
+If it doesn't work as expected, you can debug the loaded skills using:
+```bash
+opencode debug skill | jq '.[].name'
 ```
 
-## Restart and verify
 
-Config is loaded once at startup and is not hot-reloaded. Restart opencode, then:
+## Next
 
-```sh
-opencode debug skill
-```
+Learn about available skills and try them out:
 
-The output lists discovered skills (e.g. `emoji-markers`).
+[**Skills Catalog**](CATALOG.md){ .md-button }

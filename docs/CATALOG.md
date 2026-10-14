@@ -41,3 +41,5 @@ Status: ⚪ planned · 🟣 draft · 🔴 mock · 🟠 poc · 🟡 prototype · 
 - 🔴 [`communication-style`](../skills/communication-style/README.md) 🌱 — Give every message one predictable style — formatting, language, and names — so output stays easy to read and unambiguous
 - ⚪ `language-selection` 📄 — Choose programming languages with justification
 - ⚪ `coding-style` 📄 — Coding style conventions
+
+> TODO: we should provide a proper [index.json](https://opencode.ai/v2/docs/skills/#catalogs)
