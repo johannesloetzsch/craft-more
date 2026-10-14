@@ -50,9 +50,23 @@
   </defs>
 
   <style>
+    :root {
+      /* Brand ink; flips with the viewer's colour scheme. */
+      --ink: #111;
+      --ink-dim: #333;
+      color: var(--ink);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #ececec;
+        --ink-dim: #b0b0b0;
+      }
+    }
+
     .word {
       font: 700 58px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      fill: #111;
+      fill: var(--ink);
       letter-spacing: -3px;
     }
 
@@ -73,7 +87,7 @@
 
     .slogan {
       font: 16px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      fill: #333;
+      fill: var(--ink-dim);
       clip-path: inset(0 100% 0 0);
       animation: type 40s steps(42, end) infinite;
     }
@@ -130,15 +144,15 @@
 
   <!-- Terminal icon -->
   <rect x="12" y="20" width="120" height="120" rx="31"
-        fill="none" stroke="#111" stroke-width="9"/>
+        fill="none" stroke="currentColor" stroke-width="9"/>
   <path d="M42 59 L66 80 L42 101"
-        fill="none" stroke="#111" stroke-width="9"
+        fill="none" stroke="currentColor" stroke-width="9"
         stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M75 101 H98"
-        fill="none" stroke="#111" stroke-width="9"
+        fill="none" stroke="currentColor" stroke-width="9"
         stroke-linecap="round"/>
   <path d="M105 42 L109 53 L120 57 L109 61 L105 72 L101 61 L90 57 L101 53 Z"
-        fill="#111"/>
+        fill="currentColor"/>
 
   <!-- Animated wordmark -->
   <text class="word variant hyphen" x="158" y="98">craft-more</text>

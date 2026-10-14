@@ -5,6 +5,18 @@
   --md-accent-fg-color--transparent: #2f3c861a;
   --md-accent-bg-color: #fff;
   --md-accent-bg-color--light: #ffffffb3;
+  --cm-label: #4051b5;   /* section-label / TOC colour today = header indigo */
+}
+
+/* Dark scheme: the same blues, lightened to stay legible on the dark surface
+   (bg ≈ hsl(225,15%,14%)). Without it, the light-tuned accent (#2f3c86) and
+   label (#4051b5) sit at ~1.6:1 / ~2.3:1. */
+[data-md-color-scheme="slate"] {
+  --md-accent-fg-color: #7e8cf0;
+  --md-accent-fg-color--transparent: #7e8cf01a;
+  --md-accent-bg-color: var(--md-default-bg-color);
+  --md-accent-bg-color--light: var(--md-default-bg-color--light);
+  --cm-label: #7e8cf0;
 }
 
 /* Skill-category headings: make them read as section labels */
@@ -13,7 +25,7 @@
   letter-spacing: .04em;
   text-transform: uppercase;
   font-size: .62rem;
-  color: var(--md-primary-fg-color);
+  color: var(--cm-label);
 }
 
 /* Emphasize the category that holds the current page */
@@ -23,11 +35,11 @@
 
 /* Table of contents: same colours as the section headings */
 .md-nav--secondary > .md-nav__title {
-  color: var(--md-primary-fg-color);
+  color: var(--cm-label);
 }
 
 .md-nav--secondary .md-nav__item .md-nav__link {
-  color: var(--md-primary-fg-color);
+  color: var(--cm-label);
 }
 
 .md-nav--secondary .md-nav__item .md-nav__link--active {

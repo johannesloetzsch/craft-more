@@ -861,3 +861,164 @@ Proposed rules
 - 📌 State the boot boundary in the boot rule: the minimal load is the phase where "no tool call" applies. Implementation: `AGENTS.md` §Session start.
 
 ⏰ [REVISIT] The harness opening a session with a generic request before boot — decide whether/how to change it.
+
+---
+
+## 2026-10-14 · Publishing the docs site: newcomer-first layout, guards, and a workaround that wasn't needed
+
+🤒 [SYMPTOM] Across two sessions the docs site went from "set up" to "published on GitHub Pages", and three frictions showed up. The mkdocs convention — content beneath the config, build output outside the content directory — would have put the site's machinery at the repository root, where a first-time opener needs to see `README.md`, `AGENTS.md`, and `skills/`. `flake.nix` began as one large file instead of a set of includes. And an over-broad `exclude_docs` silently stripped the Material theme's `assets/` from the built site; separately, the CI/CD pipeline carried a defensive `cp -rL result _site`, a workaround for a limitation the Pages uploader does not actually have.
+
+🩺 [DIAGNOSIS] Each friction let a default or an unverified assumption stand in for a decision. The tool's layout was accepted although the repository's first reader — not the tool — is the primary audience; a monolith was left whole although each flake output is a distinct concern; and both an exclude pattern and a shell copy were written by intent, not checked against the artifact they act on — so the over-exclusion was silent and the copy was needless.
+
+🎯 [ROOT-CAUSE] Structure and workarounds were inherited from convention and habit instead of being decided from the requirement: a readable repository, one home per concern, and assumptions verified against the tool.
+
+🔧 [FIX] Layout: content and identity files stay at the root, all site machinery moves under `docs/` (config, `nix/`, stylesheets, images, scripts), `docs_dir: ..` points mkdocs back at the content root, the built site never lands in the tree (`$out`; a temp dir in the dev shell), and `exclude_docs` hides the non-page files. Flake: the blob became a thin `flake.nix` plus one include per concern — `docs/nix/{package,devShell,check}.nix`, shared logic in `docs/nix/lib/{pythonDeps,mermaid,skills}.nix`, meta-tooling in `.nix/{fmt,fmt-check}.nix`. Guards: the exclude regression became a flake check (`docs/nix/check.nix`) that asserts every expected page is present, `SKILL.md` stays excluded, the config does not leak, the stylesheet and the Mermaid bundle ship, and a `mermaid` fence renders; its expected page set is derived from the repository (`lib/skills.nix`), so it cannot drift. Pipeline: the deploy URL enters the build as an explicit parameter — a `siteUrl` argument on the docs package, exposed as `lib.<system>.mkDocs` and supplied only by the CD workflow (`builtins.getEnv "SITE_URL"` under `--impure`); the config carries `site_url: !ENV SITE_URL` with no fallback; and the `cp -rL` was deleted after reading `actions/upload-pages-artifact`'s source and running its exact `tar --directory … --dereference …` on a symlink, which follows the link — so `path: result` suffices.
+
+💡 [LEARNING] Prioritised:
+1. **The repository's first reader outranks the tool's default layout.** Choose the structure a newcomer understands and make the tool adapt (`docs_dir: ..`); keep generated output out of the tree.
+2. **One concern, one include.** A thin manifest that delegates to named, single-purpose files reads as an index and is edited in one place — the code analogue of "one home per rule".
+3. **A silent failure earns a guard.** A blocklist that over-matches removes things quietly; turn the fixed bug into a check whose expectations are derived from the source of truth, not hand-listed.
+4. **Verify a dependency's own mechanism before coding around an assumed limit.** The `cp -rL` rested on an assumption; the action's source and one local run settled it — a workaround encodes a claim, so check the claim first.
+5. **Pass a build-time value at the boundary.** An explicit parameter supplied by the caller beats mutating an inner config layer or baking in a fallback.
+
+♻️ [REFLECTION]
+
+Applied rules: evaluation-report (entry as a unit, delta-check, standalone) · plan-build-workflow (grill before write; approval before write) · skill-authoring (one home per rule) · uncertainty-and-verification (verify before claiming; label claims) · emoji-markers (closed set) · communication-style (English)
+
+Strengths
+- ✅ [OK] The Pages uploader was settled from its source and a local run, not from assumption — the defensive copy was deleted before it shipped. (uncertainty-and-verification)
+- ✅ [OK] The `exclude_docs` regression became a flake check with expectations derived from the repository, so it cannot return silently. (uncertainty-and-verification)
+- ✅ [OK] The pipeline worked on its first run: the build was verified locally against the real `SITE_URL` (sitemap and canonical) before the workflow was trusted. (verify before claiming)
+- ✅ [OK] The URL lives in exactly one place — the CD workflow; the flake and the config carry none. (skill-authoring "one home per rule")
+- ✅ [OK] The existing "a missing tool is a supply request" rule applied: Mermaid, absent from nixpkgs, comes from `mdbook-mermaid`'s pinned bundle. (tool-selection)
+- ✅ [OK] Every write was approved, and staging stayed the user's job. (interaction-guard)
+
+Improvements
+- ⚠️ [WARN] The layout's driver — newcomer readability over mkdocs convention — was never filed with the change; it surfaced only when the user was asked at evaluation time. Fix: record the deciding reason with the structural decision. (skill-authoring)
+- ⚠️ [WARN] `flake.nix` began as a blob and `exclude_docs` over-matched; both were corrected only after the user questioned them. Fix: propose structure and patterns as decisions, and check a pattern against its output. (plan-build-workflow / uncertainty-and-verification)
+- ⚠️ [WARN] The setup session's lessons and the layout rationale stayed unlogged until the user asked ("mal wieder"). Fix: write the entry at a session's wrap-up, not only on request. (workflow / evaluation-report)
+
+Proposed rules
+- 📌 [PIN] Optimise a repository's layout for its first reader; make the tool adapt, and keep generated output out of the tree. Implementation: a docs/deployment skill (to be created) or `skill-authoring`.
+- 📌 [PIN] Decompose by concern into named includes; a manifest reads as an index. Implementation: a nix/deployment skill (to be created) / `skill-authoring`.
+- 📌 [PIN] A silent failure earns an executable guard whose expectations are derived, not hand-listed. Implementation: `uncertainty-and-verification`.
+- 📌 [PIN] Verify a dependency's mechanism before coding a workaround; a workaround encodes a claim. Implementation: `uncertainty-and-verification`.
+- 📌 [PIN] Record the deciding reason with a structural decision, not only its result. Implementation: `skill-authoring` / `evaluation-report`.
+- 📌 [PIN] The user's "why?" is design review — a requirement, not friction. Implementation: `plan-build-workflow`.
+- 📌 [PIN] Write the evaluation entry at a session's wrap-up, not only on request. Implementation: `workflow` / `evaluation-report`.
+
+⏰ [REVISIT] In a git flake only tracked files exist — stage a new skill directory before trusting a build or check (`docs/nix/lib/skills.nix` caveat) · where the layout and decomposition rules belong (a docs/deployment skill?) · the CI/CD Determinate actions are pinned at `@main` · the docs and CI/CD changes await the user's commit.
+
+---
+
+## 2026-10-14 · Dark mode for the docs site: the invented blue and a self-adapting logo
+
+🤒 [SYMPTOM] The docs site — a Material for MkDocs build themed by a hand-authored
+`colors.css` (a custom blue: accent `#2f3c86`, section/TOC labels `#4051b5`) — had only a
+light palette, and its animated SVG logo paints near-black ink on a transparent background,
+so it vanishes on a dark surface. Adding a light/dark palette was easy; making the custom
+CSS and the logo survive dark mode was not. A first analysis predicted the light-tuned blues
+would all but disappear on the dark surface (accent ≈1.6:1, labels ≈2.3:1), yet when the user
+switched dark on and looked, they reported it "still looks good". The logo and the
+`colors.css` repair each had to stay minimal and keep the site's identity.
+
+🩺 [DIAGNOSIS] Two problems of one shape. The theme's colours are not authored in one place:
+Material emits its own variables (e.g. `--md-primary-fg-color`) and the site layers
+`colors.css` on top; a scheme flip changes Material's `--md-*` defaults but leaves the site's
+overrides untouched, so four light values leaked into dark. The diagnosis was asserted from
+variable names rather than read from the theme's compiled output, so "looks good" (a human's
+glance) and "meets contrast" (a measurement) were conflated until the emitted CSS was
+inspected. The logo failed differently: an SVG loaded through `<img>` is its own document, so
+the page's stylesheets never reach its ink — it had to adapt itself.
+
+🎯 [ROOT-CAUSE] A vendor's variables are shared machinery, not the site's own: redefining one
+(`--md-accent-fg-color`, which Material uses both as link text and as button background) has
+effects far beyond the site's intent, and a claim about the vendor's behaviour belongs in the
+vendor's own compiled artefact, not in memory. Extending a tested look into a new context by
+rewriting it risks the tested path; scoping leaves it intact. And a *self-contained* asset
+cannot be themed from outside at all — the adaptation must live inside it.
+
+🔧 [FIX]
+- Logo: the animated SVG (`docs/img/logo_animated.svg`) now carries `--ink`/`--ink-dim` with a
+  `@media (prefers-color-scheme: dark)` override, and the icon glyph uses `currentColor`; the
+  masks/wipes are colour-independent, so the animation is unchanged. On the site this needed
+  no extra CSS — Material sets `color-scheme` per scheme, so the embedded image follows. A
+  single adaptive file was chosen over a `<picture>` light/dark pair, which would have
+  duplicated the animation.
+- Palette: `docs/mkdocs.yml` gained the standard three-entry palette (automatic → light →
+  dark), so the reader gets the toggle and the OS preference is honoured on first visit.
+- `colors.css`: the light `:root` block is untouched; a new `[data-md-color-scheme="slate"]`
+  twin supplies lightened siblings of the same blues (accent `#7e8cf0`, ≈5.2:1), and a small
+  semantic `--cm-label` (light `#4051b5`, dark `#7e8cf0`) replaces three direct uses of the
+  vendor's `--md-primary-fg-color` so section/TOC colours follow the scheme without touching
+  the header. Light output is byte-identical (+15/−3).
+
+💡 [LEARNING] Prioritised:
+1. **A vendor variable is shared machinery — prefer a property you own.** Override the
+   vendor's variable only where its own behaviour must change (hover/active accent), and route
+   intent-specific colour through your own semantic property (`--cm-label`); the vendor's
+   variable usually drives several components at once.
+2. **A self-contained asset adapts itself; page CSS cannot reach it.** An SVG loaded through
+   `<img>` is a separate document, so the page's stylesheets and dark-mode classes never reach
+   its internals — it must carry its own media query, and it works because it inherits the
+   embedder's `color-scheme`. One adaptive file beats a `<picture>` pair when the asset is
+   animated: no duplication, one thing to keep in sync.
+3. **Extend by scoping, not rewriting.** Keep the tested branch (light) byte-identical and add
+   a scoped branch (dark); the tested look cannot regress.
+4. **Read the vendor's compiled output as ground truth.** Values, cascade order, selectors,
+   and `color-scheme` were read from the built `main.css`/`palette.css`, read-only — cheap, and
+   it turned "looks good" versus "fails contrast" into a measured difference.
+5. **A human's "looks good" is not a measurement.** Keep the computed ratios on the table; a
+   passing glance and a passing threshold are different claims, and the human decides.
+
+♻️ [REFLECTION]
+
+Applied rules: evaluation-report (entry as a unit, delta-check) · plan-build-workflow (plan
+mode; approval before write; measured counts) · uncertainty-and-verification (verify before
+claiming; ground claims in artefacts) · emoji-markers (closed set) · communication-style ·
+skill-authoring (one home per rule; record the deciding reason)
+
+Strengths
+- ✅ [OK] Every claim about Material was grounded in its own compiled CSS before any change —
+  cascade order (`colors.css` after `palette.css`), `--md-primary-fg-color` on `<body>`,
+  `color-scheme` per scheme — not recalled from memory. (uncertainty-and-verification)
+- ✅ [OK] The logo's dark path is self-contained: the SVG carries its own media query and
+  inherits the embedder's scheme, so no site CSS and no second file were needed; the
+  `<picture>` alternative was rejected for duplicating the animation.
+  (uncertainty-and-verification)
+- ✅ [OK] The tested light look is preserved byte-for-byte; the dark path is a scoped twin.
+  (plan-build-workflow)
+- ✅ [OK] The adaptive logo's "no site CSS" claim was confirmed from Material's `color-scheme`
+  handling first; the one residual (GitHub's theme) was flagged as untestable from the repo.
+  (uncertainty-and-verification)
+- ✅ [OK] Each write was approved and counted: "+20/−6" for the SVG, "+15/−3" for `colors.css`.
+  (plan-build-workflow)
+- ✅ [OK] The user's "still looks good" was reconciled with evidence — ratios computed from the
+  emitted variables — rather than accepted or overridden blindly. (communication-style)
+
+Improvements
+- ⚠️ [WARN] The first `colors.css` diagnosis asserted the failures as fact before the user's
+  test; reconciling took a round. Fix: label predicted contrast as computed-from-emitted
+  values, and distinguish "fails WCAG" from "looks wrong to you". (uncertainty-and-verification)
+- ⚠️ [WARN] The deciding reason for the whole change — keep the site's invented blue, keep
+  light untouched — was spoken by the user, not filed with the change. Fix: record the
+  deciding reason with the decision. (skill-authoring — recurrence)
+
+Proposed rules
+- 📌 [PIN] Prefer a semantic property you own over overriding a vendor variable with several
+  consumers; override the vendor var only where its own behaviour must change. Implementation:
+  a CSS/design skill (none yet) or `skill-authoring`.
+- 📌 [PIN] A self-contained asset (an `<img>`-embedded SVG) must adapt itself; prefer one
+  adaptive file over a duplicated `<picture>` pair when it is animated. Implementation:
+  `skill-authoring` (asset conventions).
+- 📌 [PIN] Extend a tested artifact by scoping — leave the tested branch byte-identical.
+  Implementation: `plan-build-workflow` / `skill-authoring`.
+- 📌 [PIN] Ground a dependency-behaviour claim in its own compiled output, read-only, not in
+  recalled names. Implementation: `uncertainty-and-verification`.
+- 📌 [PIN] A human's "looks good" is not a measurement — keep computed ratios on the table.
+  Implementation: `uncertainty-and-verification` / `communication-style`.
+
+⏰ [REVISIT] Verify the animated logo under GitHub's dark theme (untestable from the repo) ·
+where the vendor-override / scoping / self-adapting-asset rules belong (no CSS or docs skill
+yet) · the dark blue `#7e8cf0` is a first pick — tune if it feels loud · the palette and
+`colors.css` changes await the user's commit.

@@ -40,9 +40,9 @@ nav:
           - Emoji markers: skills/emoji-markers/README.md
           - Communication style: skills/communication-style/README.md
   - Development:
-      - History: docs/HISTORY.md
       - Maturity: docs/MATURITY.md
-      - Agent instructions: AGENTS.md
+      - AGENTS.md: AGENTS.md
+      - HISTORY.md: docs/HISTORY.md
 
 theme:
   name: material
@@ -56,9 +56,27 @@ theme:
     - navigation.footer
     - content.code.copy
   palette:
-    - scheme: default
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
       primary: indigo
       accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
 
 markdown_extensions:
   - admonition
