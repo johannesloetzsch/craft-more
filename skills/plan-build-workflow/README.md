@@ -11,9 +11,27 @@ A unit of work runs in a fixed, reviewable order: the goal is sharpened by grill
 ## Strategy (mock)
 
 ```mermaid
-flowchart LR
-  P(["Plan"]) --> B(["Build"]) --> V(["Verify and hand back"])
-  V -->|next unit| P
+stateDiagram-v2
+  [*] --> parse
+
+  state plan {
+    parse --> schedule
+    schedule --> grill
+    schedule --> investigate
+    investigate --> grill
+    schedule --> suggest
+    suggest --> grill
+    grill --> parse
+    grill --> approve
+  }
+
+  approve --> exec
+
+  state build {
+    exec --> validate
+  }
+
+  validate --> parse
 ```
 
 ### Phases

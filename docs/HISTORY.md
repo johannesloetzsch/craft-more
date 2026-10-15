@@ -1022,3 +1022,663 @@ Proposed rules
 where the vendor-override / scoping / self-adapting-asset rules belong (no CSS or docs skill
 yet) · the dark blue `#7e8cf0` is a first pick — tune if it feels loud · the palette and
 `colors.css` changes await the user's commit.
+
+---
+
+## 2026-10-15 · Coarse before fine: the daily plan as a goal tree
+
+🤒 [SYMPTOM] A working session on the skill collection opened with the user asking to be grilled about their plan for the day, whose first unit is to define a real state machine for the `plan-build-workflow` skill. Three frictions followed. (1) Asked to grill the plan, the agent pushed per-task detail — the state schema, the marker convention, the log format; eight questions — when the user wanted only the day's coarse outline, and had to cut it back ("our task is to do the coarse planning of the daily plan — not the detailed planning for every task"). (2) The parse-back outline was flattened twice: the day's checkpoints sat beside the goal instead of under it, though the parse-back skill states a checkpoint is a subgoal that verifies its parent; the user corrected it twice ("CHECK should be subgoals under FINISH" … "you again did not group the CHECKS under the common FINISH parent node"). (3) A scratch plan file was written without an approval step — the user accepted it only because the path is git-ignored, and asked for explicit approval "next time". The leading blank line + `---` opener dropped again.
+
+🩺 [DIAGNOSIS] Three shapes of one failure. Planning was treated at a single resolution: the agent answered "grill my plan" with task-level detail instead of the day-level goal tree the user wanted — the depth it could plan, not the depth it was asked. The parse-back was read as a flat summary instead of a dependency tree, so its nesting — the very thing that carries the plan — was dropped; the rule existed in the skill but was not applied. And the approval gate was scoped, in the agent's head, to "real" files, so a git-ignored scratch write slipped through; the opener, as before, is a content-free scaffold that decays without a mechanism.
+
+🎯 [ROOT-CAUSE] A named rule mistaken for an applied one (recurrence), plus a resolution mismatch — planning at the depth available rather than the depth requested. The write-gate was applied to tracked artifacts only, not to every write.
+
+🔧 [FIX] The daily plan was settled as a tree, not a list: one 🏁 [FINISH] the user owns (the day is done when each checkpoint was held at its time and no other task forgotten), five 🚧 [CHECK]s nested under it (machine landed → machine-readable `SKILL.md` → PoC A/B → noon pause → afternoon external task), and each deferred decision placed as a 📌 [PIN] at the checkpoint that first needs it (per-state schema → CHECK 1; `SKILL.md` frontmatter → CHECK 2; state-marker convention → CHECK 3; draft→mature → after CHECK 3). The plan was saved to a git-ignored scratch copy outside the session context. Content details in git.
+
+💡 [LEARNING] Prioritised:
+1. **Plan coarse before fine.** Settle the goal tree first — one 🏁 [FINISH] and its 🚧 [CHECK]s; open per-task detail only on request. Depth is a decision, not a default.
+2. **The outline is a dependency tree, not a list.** A 🚧 [CHECK] nests under the 🏁 [FINISH] it verifies; flattening it silently discards the plan. (The skill said so — applying a protocol means applying its shape.)
+3. **Defer with a landing site.** A postponed decision is a 📌 [PIN] pinned at its earliest need — the checkpoint that first consumes it — never a lump at the root.
+4. **The 🏁 [FINISH] is the user's.** It states their condition; the agent proposes and holds it open, never closes it.
+5. **The approval gate covers every write** — a git-ignored scratch file is still a write and needs an explicit go.
+
+♻️ [REFLECTION]
+
+Applied rules: evaluation-report (entry as a unit, delta-check) · plan-build-workflow (grill; approval before write) · parse-back (outline shape — under-applied) · emoji-markers (closed set) · communication-style (leading blank line + `---` — recurrence) · interaction-guard (reply is the message)
+
+Strengths
+- ✅ [OK] The goal tree was settled with the user owning the FINISH and the agent holding it open — "I'll mark it finished myself". (plan-build-workflow)
+- ✅ [OK] The deferred detail was captured as four 📌 [PIN]s, each mapped to its earliest need, so nothing was lost to the scope cut. (evaluation-report)
+- ✅ [OK] The plan was persisted outside the session context at the user's request, and the file was confirmed git-ignored before it was trusted. (uncertainty-and-verification)
+- ✅ [OK] The lessons-learned report was welcome — "I like your report about the lessons learned :)". (communication-style)
+
+Improvements
+- ⚠️ [WARN] Over-grilled into per-task detail when coarse planning was asked. Fix: match the frontier to the requested resolution. (plan-build-workflow)
+- ⚠️ [WARN] Flattened the parse-back outline twice; the user corrected it twice. Fix: on a correction, open the governing skill and apply its shape literally. (parse-back — recurrence of "named ≠ applied")
+- ⚠️ [WARN] Wrote a scratch file with no approval step. Fix: gate every write, scratch included. (plan-build-workflow)
+- ⚠️ [WARN] The `---` opener dropped again despite being filed. Fix: choose the durable opener guard (a hook) rather than another reminder. (communication-style — recurrence)
+
+Proposed rules
+- 📌 Plan coarse before fine: the day's 🏁 [FINISH] and its 🚧 [CHECK]s before any per-task detail; open detail on request. Implementation: `plan-build-workflow`.
+- 📌 A 🚧 [CHECK] nests under the 🏁 [FINISH] it verifies; the outline is a dependency tree. Implementation: `parse-back` (apply — already stated).
+- 📌 A deferred decision becomes a 📌 [PIN] at its earliest need. Implementation: `plan-build-workflow`.
+- 📌 The 🏁 [FINISH] is the user's; the agent holds it open. Implementation: `plan-build-workflow` / `parse-back`.
+- 📌 The approval gate covers every write, including git-ignored scratch. Implementation: `plan-build-workflow`.
+- 📌 Persist a session plan outside the session context so a compaction cannot erase it. Implementation: `workflow` / `plan-build-workflow`.
+
+⏰ [REVISIT] The durable opener guard (hook) remains unchosen · where the coarse-planning and PIN-placement rules belong (`plan-build-workflow`) · the state-machine unit (CHECK 1) awaits the user's trigger.
+
+---
+
+## 2026-10-15 · Persisting the log-entry rules: English, durable, private
+
+🤒 [SYMPTOM] The two entry rules settled in the previous unit — English only with quotes
+translated, and durable references only — were to be persisted into the skills. Three
+frictions. (1) Asked to *suggest diffs* for the rules, the agent wrote both files instead; the
+user stopped it ("you are too fast. you wrote already when I asked you to present diffs") and
+had the wording reviewed again. (2) The first "direct references" rule named the public log as
+the exception; the user inverted it ("public log is not the exception! … the only exception is
+the direct communication during the session"). (3) The first pre-write audit listed language,
+paths and standalone but omitted privacy.
+
+🩺 [DIAGNOSIS] One shape — a gate read too narrowly. "Suggest diffs" is a request to present,
+not to write; last unit the write-gate was widened to include scratch files, but the converse
+was missed: that a presentation request commissions a proposal only. The exception rule
+inverted the norm — the agent took the live session as the general case and the durable public
+style as the exception, when the reverse holds. And privacy was folded into paths: removing
+session paths is necessary but not sufficient, since an entry can name only durable artifacts
+and still carry information the repository's purpose does not require.
+
+🎯 [ROOT-CAUSE] A proposal treated as an approval — the content-go and the write-go collapsed
+into one. Plus a norm/exception inversion, and a privacy gap hidden behind path hygiene.
+
+🔧 [FIX] `skills/evaluation-report/README.md` gained three entry rules (English only; durable
+references only; purpose-bound, no otherwise-sensitive data) and its "Writing an entry" step 5
+now runs the pre-write audit after the go — language · paths · privacy · standalone.
+`skills/communication-style/README.md` gained "Direct references" (public text follows the
+rules; the session conversation is the one exception, where output is direct and concrete) and
+its Language rule now says a non-English quote is translated, not copied. Counts:
+evaluation-report +6/−1, communication-style +2/−1.
+
+💡 [LEARNING] Prioritised:
+1. **"Present" is not "write".** A request to suggest, draft, or show diffs commissions a
+   proposal only; the write waits for an explicit go. A content-go is not a write-go.
+2. **Name the norm before the exception.** The durable, public style is the default; the live
+   session is the exception. An exception is only meaningful against a stated norm.
+3. **Privacy is its own rule, not a subset of paths.** An entry may name only durable
+   artifacts and still leak what the repository does not need; purpose-bound is the test.
+4. **The audit runs after the go, immediately before the write** — it audits the concrete
+   draft, not the intent.
+
+♻️ [REFLECTION]
+
+Applied rules: evaluation-report (entry as a unit, delta-check; pre-write audit —
+under-applied) · plan-build-workflow (approval before write — under-applied) ·
+communication-style (English; direct references) · emoji-markers (closed set) ·
+interaction-guard (reply is the message)
+
+Strengths
+- ✅ [OK] Each rule landed in one home — entry rules in `evaluation-report`, the general style
+  rule in `communication-style` — no duplication. (skill-authoring)
+- ✅ [OK] Every write was counted and the counts measured, not estimated: +6/−1 and +2/−1 via
+  `git diff --numstat`. (plan-build-workflow)
+- ✅ [OK] The corrected framing was applied verbatim: public follows the rules, the session is
+  the exception. (communication-style)
+- ✅ [OK] The privacy gap was closed in both places at once — the rule and the audit.
+  (evaluation-report)
+
+Improvements
+- ⚠️ [WARN] Wrote both files when asked only to present diffs. Fix: treat "present/suggest/
+  draft" as content-only; write on an explicit go. (plan-build-workflow — recurrence)
+- ⚠️ [WARN] Inverted norm and exception in the "direct references" rule. Fix: state the norm,
+  then the single exception. (communication-style)
+- ⚠️ [WARN] The first audit omitted privacy. Fix: privacy is a first-class audit check.
+  (evaluation-report)
+
+Proposed rules
+- 📌 "Present/suggest diffs" commissions a proposal, not a write. Implementation:
+  `plan-build-workflow` (approval flow).
+- 📌 Name the norm before the exception. Implementation: `communication-style` / `skill-authoring`.
+- 📌 Privacy is a first-class log rule — purpose-bound, no otherwise-sensitive data.
+  Implementation: `evaluation-report` (done).
+- 📌 Run the pre-write audit after the go, immediately before the write. Implementation:
+  `evaluation-report` (done).
+
+⏰ [REVISIT] The durable opener guard (hook) remains unchosen · the state-machine unit (CHECK 1)
+awaits your trigger · whether `plan-build-workflow` already states that a content-go is not a
+write-go.
+
+---
+
+## 2026-10-15 · A bounded research sweep before a design
+
+🤒 [SYMPTOM] A session that plans a real state machine for the `plan-build-workflow` skill
+opened its first unit with a web survey: how do other published skills encode a state machine or
+multi-step workflow? Seven candidate skills were fetched and summarised, a comparison table was
+built, and their principles were abstracted. The sweep went well; two small frictions showed. (1)
+The table graded seven skills against four principles with an emoji scale whose top mark was
+labelled "best-in-class", yet several skills shared that mark and the "strong" mark below it was
+never used; the user asked what "best-in-class" meant and why a whole grade was empty. (2) One
+candidate's source URL returned 404 and its content was recovered only from a search snippet.
+
+🩺 [DIAGNOSIS] One shape — a frame left implicit until after it was used. The rating scale reached
+the output before its meaning was fixed, so its labels were inconsistent: a ranking word
+("best-in-class") was applied to a quality grade that many rows can share. Separately, the
+source was fetched before its path was confirmed, so a dead URL was discovered only at fetch
+time.
+
+🎯 [ROOT-CAUSE] Definition deferred to after use — the scale's intent and the source's validity
+were both treated as obvious rather than stated before acting.
+
+🔧 [FIX] The scale was redefined as a shared quality grade — 🟢 full · 🟡 partial · ⚪ absent —
+and the qualifiers moved from the legend into the cell text, where a "notable practice" note
+belongs; the table was re-emitted under the corrected scale. The dead candidate was recovered by
+searching for it. Three research artifacts were kept as scratch notes outside the tracked tree: a
+per-candidate overview, the comparison table, and a best-practices abstract of every reported
+principle (seventeen, in three tiers, each as states · why · implement). No tracked file changed
+in this unit.
+
+💡 [LEARNING] Prioritised:
+1. **Research before design.** A bounded survey de-risks the design it precedes and belongs
+   before it — here a first 🚧 [CHECK] ahead of the state-machine work.
+2. **Bound a sweep before starting.** Fix sources, candidate count, search budget, and output
+   channel up front, so a survey cannot become a rabbit hole.
+3. **One capture shape per candidate.** A fixed shape (what it contains · aim · structure ·
+   lessons) makes synthesis mechanical — the comparison costs nothing extra.
+4. **State a rating scale and its intent before applying it.** A grade and a ranking are
+   different instruments; an unused level means the scale was not thought through.
+5. **Verify a source URL — or search first — before fetching.** A dead link is cheaper to catch
+   before the fetch than after.
+6. **Keep the user in the loop at cheap, small checkpoints.** Tiering the hits at the start and
+   reviewing the scale in the middle caught both misses almost for free.
+
+♻️ [REFLECTION]
+
+Applied rules: plan-build-workflow (research as a bounded unit before the design) · evaluation-report
+(entry as a unit, delta-check, pre-write audit) · emoji-markers (closed set; a grade scale) ·
+interaction-guard (the reply is the message) · communication-style (English only)
+
+Strengths
+- ✅ [OK] The plan placed the research before the design (a first 🚧 [CHECK] before the machine
+  unit), so the design starts from evidence rather than invention. (plan-build-workflow)
+- ✅ [OK] The sweep was budgeted up front — skills only, about ten candidates, a search cap, and
+  a chat-first output — and it stayed within the budget. (workflow)
+- ✅ [OK] The user's tiering of the hits directed depth where it mattered at near-zero cost.
+  (evaluation-report)
+- ✅ [OK] A uniform per-candidate shape made the comparison table mechanical to assemble.
+  (skill-authoring)
+- ✅ [OK] The matrix turned impressions into a column-wise comparison and surfaced the finding:
+  no surveyed skill implements all four principles. (evaluation-report)
+- ✅ [OK] Repeated refinement reused each step's output — search → fetch → summary → matrix →
+  abstract — and all artifacts stayed in scratch, with `git status` showing only the intended
+  tracked files. (plan-build-workflow)
+
+Improvements
+- ⚠️ [WARN] Named the rating scale after using it. Fix: state the scale and its intent before
+  applying it. (evaluation-report)
+- ⚠️ [WARN] Fetched an unverified source URL. Fix: verify the path, or search first, before
+  fetching. (interaction-guard / workflow)
+
+Proposed rules
+- 📌 Put research before design; make the survey the first 🚧 [CHECK]. Implementation:
+  `plan-build-workflow`.
+- 📌 Bound a research sweep with an explicit budget (sources, count, searches, channel) before
+  starting. Implementation: `workflow` / `plan-build-workflow`.
+- 📌 Give every candidate one capture shape so synthesis is mechanical. Implementation:
+  `workflow`.
+- 📌 State a rating scale and its intent before applying it. Implementation: `evaluation-report`.
+- 📌 Verify a source URL, or search first, before fetching. Implementation: `interaction-guard`.
+
+⏰ [REVISIT] The state-machine unit (CHECK 1) awaits the user's trigger · whether the
+research-before-design ordering and the sweep-budget rule belong in `plan-build-workflow` or in
+the `workflow` meta-skill · the durable opener guard (hook) remains unchosen.
+
+---
+
+## 2026-10-15 · Methods that carry the work: gate by mode, draft first, externalize early
+
+🤒 [SYMPTOM] A working session picked up after the previous entry. Three things happened: a new
+research task was set (how always-on skills survive context loss, and what will likely break
+when a skill becomes a state machine); the user gave a long verbal brief on `plan-build-workflow`
+(convert the first mock into a real skill, working on always-on, session-survival, and
+content-correctness); and two files were drafted — an internal design note in the skill folder
+and a per-phase research plan — then held and finally written on an explicit "go 2 files".
+Several methods carried the work well; three frictions showed. (1) The write request arrived
+while still in plan mode; it was refused until the mode switched, which the user confirmed was a
+deliberate test. (2) The approval ask showed both drafts in full but omitted their line counts,
+although `plan-build-workflow`'s own count contract requires counts in an approval ask. (3) A
+`NOTES.md` placement was recommended (git-ignored scratch) that contradicted the user's stated
+instruction (in the skill folder) — caught only because it was raised as a question. The session
+plan had also dropped from carry-forward and was recovered only from its git-ignored scratch copy.
+
+🩺 [DIAGNOSIS] The failures and the successes share one axis: whether state lived in a file or
+only in the conversation, and whether a gate depended on an action or on prose. Every artifact
+that lived in a file survived and could be re-read (the design note, the staged README diff, the
+scratch plan); yet the plan's own added checkpoint had gone stale in its file, and the live plan
+had vanished from the running context until the scratch copy was re-read. And the one gate that
+genuinely held — no write in plan mode — held because an action depended on it.
+
+🎯 [ROOT-CAUSE] State kept only in the conversation drifts or is lost; state externalized to a
+file recovers. And a rule acts when a mechanism can depend on it (the edit mode), not when it is
+merely stated.
+
+🔧 [FIX] The two drafts were written on the go: `skills/plan-build-workflow/NOTES.md` (+98 lines
+— internal design memory: status, the three success properties, the main goal, the staged state
+wireframe, a state-inventory stub, the adopted principles, the open PINs, the risk inputs, the
+out-of-scope note) and a per-phase research plan under a git-ignored scratch directory (+60 lines
+— the phase table and the Phase 2 search terms). Both were verified after writing: line counts
+measured, the scratch file confirmed git-ignored. Content details in git.
+
+💡 [LEARNING] The methods that carried the work — each with why it worked:
+
+1. **Gate by mode, not by memory.** A write requested in plan mode was refused until the mode
+   switched. *Why:* the gate held because the action (a write) depended on an external state, not
+   on a sentence the model could drop.
+2. **Draft-first, then approve.** Both artifacts were shown in full before any write; the go then
+   came as a bare "go 2 files". *Why:* a complete preview moves the user's check to its cheapest
+   moment, so approval is fast and confident.
+3. **Approve by class, gate by artifact.** Scratch writes to the ignored directory were
+   pre-approved as a class; each tracked file kept its own go. *Why:* friction drops on
+   disposable output while durable artifacts keep their gate.
+4. **Ground in the local record before the web.** The plan was seeded by reading the log, the
+   getting-started guide and the relevant skills first. *Why:* the repository's own log is a
+   design input, not just a record of the past.
+5. **Pre-commit a per-phase budget.** The research plan fixed searches and fetches per phase
+   before any search ran. *Why:* bounding effort becomes a plan rather than a mood.
+6. **Externalize intent immediately.** A long verbal brief was captured into a file the moment it
+   was given. *Why:* it is the session-survival remedy — externalized state — applied to the very
+   problem under study.
+7. **Keep the user at cheap checkpoints.** Tiering the sources, reviewing the rating scale,
+   confirming scope — all at low cost. *Why:* small, complete artifacts make corrections nearly
+   free.
+8. **Verify the artifact against the present state.** The persisted plan was checked and found to
+   be missing the research checkpoint. *Why:* a persisted plan drifts from the live one.
+9. **Attribute a problem to its fire-time home first.** The opener/read-back fixes were
+   reassigned to `communication-style`/`parse-back` before any redesign. *Why:* a fix in the wrong
+   home does not fire.
+
+♻️ [REFLECTION]
+
+Applied rules: plan-build-workflow (draft-first approval; approval before write; the count
+contract — under-applied) · evaluation-report (entry as a unit, delta-check, pre-write audit) ·
+workflow (research as a bounded unit; the user in the loop) · interaction-guard (the reply is the
+message; requirement before instrument) · emoji-markers (closed set) · communication-style
+(English)
+
+Strengths
+- ✅ [OK] The plan-mode gate held: a write requested in plan mode was refused until the mode
+  switched, and the user confirmed it as a deliberate test. (plan-build-workflow)
+- ✅ [OK] Both artifacts were drafted in full before the go, so approval came as a bare "go 2
+  files". (plan-build-workflow)
+- ✅ [OK] Scratch writes were pre-approved by class while tracked artifacts kept their individual
+  gate. (plan-build-workflow)
+- ✅ [OK] The verbal brief on the skill was externalized to a file at once, so it survives a
+  compression. (workflow)
+- ✅ [OK] The plan was grounded in the log and the skills before any web work. (workflow)
+- ✅ [OK] Both writes were verified after the fact — counts measured, scratch confirmed ignored.
+  (uncertainty-and-verification)
+
+Improvements
+- ⚠️ [WARN] The approval ask omitted line counts, though the count contract requires them. Fix:
+  state counts in the ask, measured or estimated. (plan-build-workflow)
+- ⚠️ [WARN] A `NOTES.md` home was recommended that contradicted the user's stated instruction.
+  Fix: flag an overriding recommendation as an override before proposing it. (interaction-guard /
+  plan-build-workflow)
+- ⚠️ [WARN] The session plan dropped from carry-forward and was recovered only from its scratch
+  copy. Fix: re-read the persisted plan at the start of each planning turn. (workflow)
+
+Proposed rules
+- 📌 An approval ask lists every target file with its line counts (measured or estimated).
+  Implementation: `plan-build-workflow` (count contract).
+- 📌 Approve scratch by class; gate each tracked artifact individually. Implementation:
+  `plan-build-workflow`.
+- 📌 Flag a recommendation that departs from a stated instruction as an override before proposing.
+  Implementation: `interaction-guard` / `plan-build-workflow`.
+- 📌 Externalize a verbal brief to a file as soon as it is given. Implementation: `workflow` /
+  `plan-build-workflow`.
+- 📌 Re-read the persisted plan at the start of each planning turn. Implementation: `workflow`.
+
+⏰ [REVISIT] Apply the count-contract, override-flag and plan-re-read rules to the skills · the
+state-machine unit (CHECK 1) awaits the user's trigger · the risk research (always-on ·
+state-machine pitfalls) is planned but not started · whether `NOTES.md` stays in the skill folder
+or moves to git-ignored scratch.
+
+---
+
+## 2026-10-15 · The report summarises, the file remembers
+
+🤒 [SYMPTOM] The risk research ran its first three phases. Phase 0 mined `HISTORY.md` into 17
+known problems; Phase 1 locked scope and budget; Phase 2 ran 12 searches and produced 32
+candidates. They converge on a working **thesis** — *standing rules decay under context
+compaction, prohibition-style rules fastest, so an always-on rule must live outside the
+compactable region* — a claim the research delivered in the chat report but **not in the file**:
+the scope note held scope and budget only. The report was rich; the file was thin.
+
+🩺 [DIAGNOSIS] The valuable detail lived only in the conversation. The file carried the structure;
+the substance stayed in chat. The user wants the report to be the summary and the file to be the
+durable raw record. This is the same failure the research is about — state kept only in the
+conversation drifts or is lost; state externalized to a file recovers. A smaller, separate slip:
+the shape of an answer did not always match the count of questions.
+
+🎯 [ROOT-CAUSE] I treated the chat report as the deliverable and the file as bookkeeping — the two
+roles were swapped. The file is the artifact that survives; the report is the disposable index.
+
+🔧 [FIX] The raw findings were written into the scope note (+73 lines: the A and B evidence with
+their sources and numbers, a map from each finding to the 17 logged problems, and five open
+research questions). The note went 39 → 112 lines. The tiering — my recommendations accepted — is
+now the gate to Phase 3, the fetches. Unverified magnitudes stay in the scratch note; the durable
+log carries only the thesis.
+
+💡 [LEARNING]:
+
+1. **The report summarises; the file remembers.** *Why:* the chat decays with the window, the file
+   survives — raw detail belongs in the file; the report is the index.
+2. **Persist the interesting part the moment it appears.** *Why:* findings raised in Phase 2 were
+   nearly lost to a later compaction — writing them is the very remedy the research recommends.
+3. **A working assumption is a thesis, not a number.** *Why:* unverified, snippet-level figures in a
+   durable log read as fact and are not believed; state the idea, keep the figures in scratch.
+4. **Match the answer shape to the count.** One question inline; several via the question tool.
+   *Why:* the tool is overhead for one; prose loses several.
+5. **Mine the local record before the web.** *Why:* the 17 logged problems aimed the 12 searches
+   and made synthesis mechanical.
+6. **A pre-committed budget is held.** *Why:* 12 searches planned, 12 used, 0 fetches.
+
+♻️ [REFLECTION]
+
+Applied rules: evaluation-report (entry as a unit; classify against the log) · plan-build-workflow
+(gate by mode; draft-first approval) · workflow (bounded research; the user in the loop) ·
+interaction-guard (the reply is the message) · communication-style (English).
+
+Strengths
+- ✅ [OK] Grounded before searching: 17 problems mined from the log sharpened every query. (workflow)
+- ✅ [OK] The budget held exactly: 12 of 12 searches, 0 fetches. (workflow)
+- ✅ [OK] A real click-stop: the user tiered the candidates and the work paused. (plan-build-workflow)
+- ✅ [OK] The raw detail was externalized once flagged. (evaluation-report)
+
+Improvements
+- ⚠️ [WARN] Report and file roles were swapped — the file held form, not substance. Fix: write the
+  raw findings to the file first, then summarise in chat. (evaluation-report / workflow)
+- ⚠️ [WARN] Unverified figures were promoted into the chat report as if settled. Fix: state early
+  results as a thesis; keep magnitudes in scratch until verified. (evaluation-report)
+- ⚠️ [WARN] The five research questions arrived after the fact. Fix: capture open questions in the
+  file as they arise. (workflow)
+
+Proposed rules
+- 📌 The report is a summary; the raw, valuable detail goes into the file. Implementation: `workflow`
+  / `evaluation-report`.
+- 📌 Persist a finding to the file the moment it appears, not only in chat. Implementation:
+  `workflow` / `evaluation-report`.
+- 📌 State early findings as a thesis, not as numbers; keep unverified magnitudes in scratch.
+  Implementation: `evaluation-report`.
+- 📌 Keep source citations in git-ignored scratch always; add sources to public files only after
+  approval. Implementation: `evaluation-report` / `communication-style`.
+- 📌 Match the answer shape to the count: one question inline, several via the question tool.
+  Implementation: `interaction-guard`.
+
+⏰ [REVISIT] Phase 3 (fetch the A/B keepers, ≤10) and the five open questions — starting with the
+opencode-specific ones (compaction hooks; persist-outside-the-window) · the report-vs-file rule
+feeds `evaluation-report` and `workflow`.
+
+## 2026-10-15 · A finding is not a lesson: what transfers, and what makes an abstract task safe
+
+🤒 [SYMPTOM] The risk research closed its remaining phases and the comparison survey behind it
+finished; its results, which live in the research file, were drafted into this log as three
+"learnings". Applied to the filter this log exists for, two of the three belonged to one job and
+would help no other task. The same stretch ran with almost no correction — until one request was
+expanded into work nobody had asked for.
+
+🩺 [DIAGNOSIS] The research file's job and the log's were conflated. Findings, grades and gaps
+belong with the detail and the citations in the research note; the log carries only what still
+helps on a different task. The stretch also produced the opposite signal worth recording: the
+work was steered well enough that quality needed no complaint, and the single place the steering
+was missing is exactly where the scope ran away.
+
+🎯 [ROOT-CAUSE] The log's purpose was not applied as a filter before writing. A finished research
+unit leaves a pile of interesting results, and interesting is not the same as transferable.
+
+🔧 [FIX] The entry was thinned to what transfers; the survey result, its grades and the gap it
+found stay in the research file and are referenced by pointer. What is logged is the filter
+itself, plus the steering recipe that let an abstract task be handed over and still come back
+approvable — four moves, in the order they were used:
+
+- **Name the artifact's purpose, not its content** — stating what the file is *for* fixed what
+  went into it without prescribing any of it.
+- **Hand a decision with its constraints in one line** — file, count, citations, granularity and
+  language closed in one round, so the draft landed first try.
+- **Answer open questions with the call, not the reasoning** — each question arrived with a
+  recommended default, so answering it was cheap and execution started immediately.
+- **State a progress protocol for a batch** — a position before every step made a multi-source run
+  inspectable without the user having to read the sources.
+
+💡 [LEARNING]:
+
+1. **A finding is not a lesson.** *Why:* a survey result, a gap or a grade belongs to one job;
+   the log is only useful if it helps on a different task. Filter each candidate by that question
+   before it is written down.
+2. **An abstract task lands when it carries purpose, constraints and an authorization boundary.**
+   *Why:* naming what an artifact is *for*, closing the ambiguities that matter, and saying what
+   may be done turned a one-line task into an approvable draft. The same abstraction without the
+   boundary produced an unauthorized validation detour — abstraction is what makes overreach
+   possible, so the boundary has to travel with it.
+3. **A progress protocol makes a batch steerable.** *Why:* reporting position before each step of
+   a multi-step batch made the run inspectable mid-flight, so drift was caught while stopping was
+   still cheap. It is what allows the next hand-off to be more abstract.
+4. **Scope a claim to what was evaluated.** *Why:* "none of the seven evaluated …" is checkable;
+   "no published skill …" is not. The conservative form is also the harder one to argue with.
+
+♻️ [REFLECTION]
+
+Applied rules: evaluation-report (the log remembers transferable lessons; findings stay in the
+research file) · plan-build-workflow (draft first; gate by mode) · workflow (bounded research
+batches; the user in the loop) · interaction-guard (requirement before instrument; the reply is
+the message) · uncertainty-and-verification (scope the claim to the evidence) ·
+communication-style (English).
+
+Strengths
+- ✅ [OK] The research closed its remaining phases and every open question was answered, then was
+  converted into a design-principles draft instead of being left as notes. (workflow /
+  plan-build-workflow)
+- ✅ [OK] A batch ran with a stated position before every step, so it stayed steerable without the
+  user reading the sources. (workflow)
+- ✅ [OK] A fabrication concern was checked against the sources and retracted; no correction was
+  owed. (uncertainty-and-verification)
+- ✅ [OK] The user had to complain once, about scope, and not at all about quality.
+  (plan-build-workflow)
+
+Improvements
+- ⚠️ [WARN] An inspection request was expanded into a validation job with new searches. Fix: state
+  the requirement before the first tool call; a request to *see* is analysis-only.
+  (interaction-guard)
+- ⚠️ [WARN] Findings were drafted as learnings. Fix: apply the transfer filter before writing the
+  learning section. (evaluation-report)
+- ⚠️ [WARN] A claim was scoped to the field when only seven skills had been evaluated. Fix: name
+  the evaluation set in the claim. (uncertainty-and-verification)
+
+Proposed rules
+- 📌 Before the first tool call of a research or investigation batch, state the requirement it
+  satisfies. Implementation: `interaction-guard` / `workflow`.
+- 📌 Hand an abstract task with three things: the artifact's purpose, the constraints that matter,
+  and the authorization boundary. Implementation: `workflow` / `interaction-guard`.
+- 📌 Report position before each step of a multi-step batch so it stays steerable.
+  Implementation: `workflow`.
+- 📌 The daily log carries only what transfers to a different task; findings stay in the research
+  file and are referenced by pointer. Implementation: `evaluation-report`.
+- 📌 Scope every claim to what was actually evaluated. Implementation:
+  `uncertainty-and-verification`.
+
+⏰ [REVISIT] CHECK 1 — land the machine: fill the state inventory from the design principles in
+`skills/plan-build-workflow/DESIGN.md`, and settle mechanism vs prose, which is the gate on
+always-on and session-survival · the four steering moves are the template for the next, more
+abstract hand-off · the rules above feed `interaction-guard`, `workflow`, `evaluation-report` and
+`uncertainty-and-verification`.
+
+## 2026-10-15 · Breadth before depth: a fixed-agenda grilling loop, and the artifact as the ground truth
+
+🤒 [SYMPTOM] The design principles for the `plan-build-workflow` state machine existed as a first
+draft in `skills/plan-build-workflow/DESIGN.md`: nine sections, one per criterion of the
+state-machine survey. The draft contained at least two real errors — §1 "State as data" placed the
+runtime instance "in the working context" while §6 "Externalised state (survival)" placed it in a
+file, and §4 "Termination + budget" declared terminal states that the machine, by design, does not
+have. The draft also carried a wide surface of undecided questions. Settling it in one deep pass
+would have buried the overview in the first contentious topic, and any decision reached only in
+chat could be erased by a context compaction before it was written down.
+
+🩺 [DIAGNOSIS] Two needs, one shape. The design wanted breadth first — a shared, verified overview
+across all nine criteria before any depth — and every decision had to leave the conversation as it
+was made, because the conversation is exactly what compaction destroys. Both are served by the same
+move: a grilling loop over a pre-set agenda in which every round ends in a written decision or a
+structured deferral in the public artifact.
+
+🎯 [ROOT-CAUSE] A finished research and a first-draft design leave a broad field of undecided
+questions. Depth-first is the default and spends the whole session on the first hard question,
+leaving the rest unexamined; and agreement that lives only in prose evaporates with the context.
+Neither is a discipline problem — it is the absence of a *fixed agenda* and of an *artifact that
+carries the state*.
+
+🔧 [FIX] A grilling loop over the nine pre-set sections, one per round. Each round: report the
+section, then at most two or three questions covering (a) is it understood, (b) what are your own
+ideas, (c) does it contradict anything already settled — and then move to the next section
+regardless of how much depth remained. Every outcome was written into `DESIGN.md`: rounds 1–4
+immediately as they were settled, rounds 5–9 in one consolidated pass after the loop (the context
+was free and the user preferred to write in a piece). The loop had a declared stop condition (nine
+of nine) and a declared post-loop action (the consolidated write). It was, in shape, itself a
+plan-build cycle: fixed structure, per-round validation, explicit termination, a write at the end.
+
+Settled decisions (public in `DESIGN.md`), in the survey's order:
+
+- **State as data** — the schema is static, agent-facing and lives in `SKILL.md` as two markdown
+  tables (a states table saying what each state *is expected to do* and what it *must not do*; a
+  transitions table of `from → to` and its condition). The runtime instance is JSON conforming to a
+  JSON schema. The mermaid diagram is human-facing and explicitly **non-authoritative**. Where
+  several moves apply, the transitions table is read top-to-bottom, **first applicable wins**, so
+  the model evaluates conditions in order instead of choosing between moves.
+- **File-split** — `README.md` carries the human mermaid and is non-authoritative; `SKILL.md` is a
+  thin **router** holding only the two tables, well under the 500-line cap, which is a *tripwire,
+  not a design value*; each state gets a detail file holding its checklist, exit criteria and
+  normative wording, loaded on demand for the current state only.
+- **Per-state capability gating** — the allow-list is primary and **default-deny**: anything not
+  explicitly listed is forbidden. "Must-not-happen" checks live inside the checklist, next to the
+  positive ones. `exec` is the only state that may mutate the workspace; everything upstream of it
+  is reversible by construction.
+- **Termination + budget (reframed)** — the machine **does not terminate**. Plan is the default;
+  the gate into build is an *empty frontier*; build requires a **finalized budget** agreed in plan
+  and confirmed at `approve`; build ends or its budget is exhausted and returns to plan;
+  `validate → plan` is unconditional. Failure runs toward *more* user involvement, never less.
+- **Real mechanism (enforcement)** — deliberately **deferred as the hardest principle**. The user's
+  provisional position is kept on the record: enforcing a rule needs a *tool*; a skill alone cannot
+  do it fully reliably. Partial answer recorded beside it: prose can only *discourage*, which is the
+  decaying form; the hard gate that survives is the host's own permission / pre-write layer, outside
+  the model's reach. Likely shape: the skill *declares* what must be enforced, the host *blocks*,
+  and a host without that layer degrades honestly. Pending an explicit cross-check against the
+  risk-research findings.
+- **Externalised state (survival)** — **option (b) first**: the instance lives in context and is
+  persisted only at named points; **option (a)** (file-authoritative, context-as-cache) is the
+  fallback. The persist points are the *user boundaries* — after `parse` and after `approve` — and
+  the same points read back, so the file is never more than one user interaction stale. Honest
+  claim: under (b) survival is **not secured by default**; the one exposed window is a compaction
+  firing *mid-build-turn*, which is a named PoC question rather than an oversight.
+- **Rule-decay handling** — re-injection has two layers, split by scope: the **hub** injects the
+  *global* rules, and the hub is `schedule`, verified rather than asserted because `schedule` and
+  `grill` alternate in the mermaid and so `schedule` lies on every cycle; each state's checklist
+  injects its *local* rules. A **bootstrap edge** is recorded: the hub cannot be the only route to
+  the base rules, because reaching `schedule` already presupposes knowing one is in `schedule` — the
+  *first* injection belongs to the always-on layer, and the hub only performs the *re*-injection.
+  "Two or three rules per state" is a tripwire, not a design value.
+- **Verification independence** — independence is **distributed, not delegated**: in plan the
+  checker is the *user* (every agent action ends in a grill), in build it is the separate `validate`
+  state. Parse-back verifies the *input* (understandability, plausibility); validate and grill verify
+  the *output*. There is **no autonomous retry loop** — a fail is recorded, the step ends, further
+  loops are blocked, and the user decides via grill. Batch jobs are a later, **named, budgeted
+  exception** to that rule, requiring an in-build scheduler.
+- **Host dependence** — **minimised by design**. Host mechanisms are to stay orthogonal to skill
+  capability and form an independent, more-important layer; host-specific work is out of scope for
+  now; the disclaimers in `docs/INSTALL.md` carry the section; a host-configuration recommendation
+  may come as a separate, much later delivery.
+
+💡 [LEARNING]:
+
+1. **Breadth before depth — give every topic an overview before deepening any.** *Why:* the natural
+   failure is depth-first, which spends the whole session on the first hard question and leaves the
+   rest unexamined. A shallow, complete pass yields a shared map and makes depth a schedulable, later
+   activity instead of a tax on the first interesting point.
+2. **A fixed agenda is the rail that makes breadth-first possible.** *Why:* with the nine criteria
+   chosen *before* the loop, the next stop is always already written down, so there is nothing to get
+   lost in. Without a pre-set list, a shallow pass slides into depth by default.
+3. **A round shape of report → three questions keeps depth-creep out.** *Why:* asking only (a) is it
+   understood, (b) what are the user's own ideas, (c) does it contradict what is settled, and then
+   *proceeding* regardless of depth remaining, is what held the pass shallow. A counter-question was
+   asked only where understanding actually required it, which kept the round honest without opening
+   new depth.
+4. **Test each new decision against the settled ones.** *Why:* the contradiction check found a real
+   error — §1 placed the instance in context while §6 placed it in a file — that no per-section
+   review could have caught. It is cheap, and it catches exactly the errors a section-by-section
+   reading structurally cannot.
+5. **Structured deferral keeps a shallow pass honest.** *Why:* a shallow pass that silently drops the
+   hard questions is just a worse deep pass. Recording "later" with its reason and *what will settle
+   it* (a measurement, a cross-check) turns the PIN list into a forward work list rather than a set
+   of lost threads.
+6. **The artifact is the ground truth and the write cadence should follow the context.** *Why:*
+   decisions written into the public file survive compaction, and that is precisely what makes a
+   shallow pass affordable — a shallow round still leaves something durable. This inverts a normal
+   grilling, where the transcript is the record and is the first thing compaction erases. The cadence
+   itself was adapted mid-session — rounds 1–4 written at once, later rounds batched for a free
+   context — rather than fixed by ritual.
+7. **The user steers; the facilitator records and derives consequences.** *Why:* the strongest moves
+   were the user's and were adopted over the facilitator's lean — option (b) in §6, the `schedule`
+   hub in §7, and in §8 where "does a fail cost budget?" was answered by replacing the mechanism
+   with "fail → the user decides." The useful role is not proposer but *scribe-with-consequences*:
+   take the decision, write it down, surface what it breaks.
+8. **A loop with a declared termination and a declared post-loop action is itself a plan-build
+   cycle.** *Why:* the grilling had a stop condition and a next step, so it could not drift into
+   re-litigation — and in doing so it instantiated the very workflow it was designing, which is a
+   useful correctness signal in its own right.
+
+♻️ [REFLECTION]
+
+Applied rules: plan-build-workflow (the loop as a plan-build cycle; the artifact as ground truth) ·
+evaluation-report (carry only what transfers) · workflow (fixed agenda, one topic per round) ·
+interaction-guard (requirement before instrument; the reply is the message) ·
+uncertainty-and-verification (claims deferred honestly; every new decision checked against the
+settled) · communication-style (English) · skill-authoring (draft-first).
+
+Strengths
+- ✅ [OK] A breadth-first pass over nine pre-set criteria finished with a shared, verified overview;
+  nothing was left unexamined, and depth stayed available for later. (workflow)
+- ✅ [OK] Every settled decision and every deferral landed in the public artifact, so none was lost
+  to a context compaction. (evaluation-report / plan-build-workflow)
+- ✅ [OK] The contradiction check found a real cross-section error (§1 vs §6) that per-section
+  review would have missed. (uncertainty-and-verification)
+- ✅ [OK] The user's better ideas were adopted over the facilitator's lean rather than argued down,
+  and the consequences of each were written out. (plan-build-workflow)
+- ✅ [OK] Deferrals were structured — reason plus what would settle them — so the PIN list became a
+  work list. (evaluation-report)
+
+Improvements
+- ⚠️ [WARN] The first draft carried two real errors of mine: §1 vs §6 (where the instance lives) and
+  §4's terminal states. Fix: run the cross-section contradiction check before calling a draft
+  settled. (plan-build-workflow)
+- ⚠️ [WARN] Round 4 flagged a "missing terminal state" that the design intentionally does not have.
+  Fix: establish the design's intent before flagging a structural gap. (plan-build-workflow)
+- ⚠️ [WARN] Round 8 asked whether a failing check "costs budget" — pricing the wrong mechanism; the
+  user replaced it with "fail → the user decides." Fix: ask for the mechanism before a parameter of
+  it. (plan-build-workflow)
+- ⚠️ [WARN] Writes were batched by default until the user asked to persist before compression. Fix:
+  persist durable decisions promptly rather than batching by default. (evaluation-report)
+
+Proposed rules
+- 📌 Grill over a fixed agenda breadth-first: one topic per round, overview level, depth deferred.
+  Implementation: `workflow` / `plan-build-workflow`.
+- 📌 Every grilling round ends in a written decision or a structured deferral in the artifact, never
+  in chat agreement alone. Implementation: `evaluation-report` / `plan-build-workflow`.
+- 📌 Check each newly settled decision against the already-settled ones. Implementation:
+  `plan-build-workflow` / `uncertainty-and-verification`.
+- 📌 Record a deferral with its reason and what will settle it, so the PIN list is a work list.
+  Implementation: `plan-build-workflow` / `evaluation-report`.
+- 📌 Persist durable decisions to the artifact promptly; do not batch writes by default.
+  Implementation: `evaluation-report`.
+
+⏰ [REVISIT] CHECK 1 — fill the state inventory into the two `SKILL.md` tables and settle
+mechanism-vs-prose, the gate on always-on and session-survival · the principle-5 cross-check against
+the risk-research findings · the PoC question list, now three: (b)-vs-(a) mid-build-turn compaction
+loss · re-injection cadence cost against rule-drop events · the original A/B on two or three
+scenarios.

@@ -30,6 +30,11 @@ Domain vocabulary per entry: 🤒 [SYMPTOM] → 🩺 [DIAGNOSIS] → 🎯 [ROOT-
 
 Entries are read by people who were not in the session: each entry must stand alone — names and context are introduced, session-only jargon explained, nothing assumed from memory.
 
+Three rules keep an entry public and durable:
+- **English only.** An entry is written in English; a quote is translated, not left verbatim.
+- **Durable references only.** An entry names only durable repo artifacts and durable conventions. A session-scratch (`tmp`) path may appear only with explicit user approval; anything outside the repository or otherwise private never appears in the log.
+- **Purpose-bound.** An entry carries only what the repository's purpose requires, and never leaks otherwise potentially sensitive data.
+
 Status and action markers come from [emoji-markers](../emoji-markers/README.md) — referenced, never duplicated.
 
 Every entry ends with a reflection, in this order:
@@ -48,7 +53,7 @@ An entry is written like a unit of work — see [plan-build-workflow](../plan-bu
 2. classify each against the existing log: already recorded, changed, or new
 3. keep only the changed and new lessons, prioritised
 4. draft the entry for a content-go
-5. write it, then verify
+5. once the go is given, run the pre-write audit — language (English only) · paths (durable only) · privacy (purpose-bound, no otherwise-sensitive data) · standalone (readable without the session) — then write it and verify
 6. triage the proposed rules
 
 Entries hold meta-level lessons for future collaboration; content changes live in git, not here.

@@ -1,4 +1,8 @@
 .tmp/
-/result
-/.direnv
+
+result
+.direnv
+
 docs/javascripts/
+
+*.swp

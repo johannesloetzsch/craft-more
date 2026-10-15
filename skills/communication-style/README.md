@@ -17,11 +17,12 @@ The *state layer* — the closed marker set and its meanings — is a sibling sk
 
 ## Rules (mock)
 
-- **Language.** English only — English quotes ("…"), no language mix. Except when the user explicitly requests it.
+- **Language.** English only — English quotes ("…"), no language mix; a non-English quote is translated, not copied. Except when the user explicitly requests it.
 - **Message separator.** Emit the opening as one block, never `---` alone: a leading blank line (`⏎`), `---`, then the first content line (the readback root) — literally `⏎` `---` `🏁 [FINISH] …`. The blank line is required — without it the `---` glues to the previous message and becomes a setext heading underline; trailing blank lines are irrelevant.
 - **Draft fences.** Show draft *snippets* in a fence tagged with the language of their content — `markdown` for docs, the code language for code — so they get correct syntax highlighting.
 - **Changes as diffs.** Present every proposed change as a unified diff — fenced as `diff`, new files included (`--- /dev/null`) — so the change is self-delimiting and reads apart from the surrounding text.
 - **Names for plans and rules.** Refer to plans and rules by a short, human-readable name, e.g. "Plan A (global instructions)".
+- **Direct references.** Public text — docs, the log — follows the rules above. The *session conversation* is the one exception: there, speak directly and concretely — name the exact terms, files, and instances in play, even while planning, reporting, or evaluating — so the reader always knows which instance is meant.
 
 ## Process rules (parked, mock)
 
