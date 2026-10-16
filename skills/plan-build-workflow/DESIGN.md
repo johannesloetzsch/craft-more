@@ -1,7 +1,8 @@
 # plan-build-workflow — design principles
 
-One section per criterion of the state-machine comparison overview. Each states
-what the criterion means, then what this machine should do about it.
+What success means for this machine comes first; then one section per criterion of
+the state-machine comparison overview — each stating what the criterion means, then
+what this machine should do about it.
 
 Status: all nine sections have been grilled with the user. Sections 1–4 and 6–9 carry
 the settled decisions; section 5 is deliberately deferred and carries only its
@@ -9,12 +10,104 @@ provisional position plus a pending research cross-check. Per-state values remai
 **provisional** until CHECK 1 fills the state inventory — they name the eight
 wireframe states as they stand now.
 
-Settled: the schema lives in `SKILL.md` as two tables, the runtime instance as JSON ·
+Settled: the state tables live in `SKILL.md`, the runtime instance as JSON ·
 `SKILL.md` is a thin router with a detail file per state · the allow-list is
 default-deny · the machine does not terminate — it gates and budgets · the instance
 lives in context and persists at user boundaries, with the PoC to decide the rest ·
 the re-injection hub is `schedule` · verification is distributed and no retry loop
 bypasses the user · host-dependence is minimal by design.
+
+---
+
+## What success means
+
+The machine is one attempt at a goal set before any criterion was chosen: make
+planning and building *reviewable* by keeping the agent in a known state, obeying
+that state's rules, and handing back to the user fast. Stated once, the main goal:
+the agent always knows **which state it is in**, follows the **rules valid in that
+state**, and **hands back to the user quickly and interactively** — or transitions
+to the next intended state exactly as the protocol defines.
+
+Three success properties were fixed as the bar before the sections were written.
+Every section below is a measure toward one of them, and the honest verdict on each
+is the reason this design chooses to stay portable instead of clever:
+
+- **(a) always-on** — reliably loaded and active for the whole session.
+  *Verdict: conditional.* Only re-assertion makes it hold; a rule stated once decays
+  (see *Rule-decay handling*).
+- **(b) session-survival** — it lives through a context compaction and stays
+  effective. *Verdict: host-dependent.* Under option (b) it is not secured by
+  default (see *Externalised state*); its strongest form needs a host mechanism.
+- **(c) content-correct** — it does the right thing in substance. *Verdict: mostly
+  outside the machine.* The machine can secure that steps are gated and checked; it
+  cannot secure that the work is substantively right (see *Real mechanism* and
+  *Verification independence*).
+
+Nothing below claims to secure (a)–(c) on its own. Each section says which part the
+machine holds and which part it knowingly leaves to the host or to the user.
+
+---
+
+## The machine definition and its contracts
+
+The machine's runtime is a **contract** that each state hands to its successor, read
+and resolved by a **static machine definition**. What earlier wording called the
+"running state" ("instance") is exactly this: the **current state plus the run
+state** (see *Contract semantics*).
+
+The full semantics of this model — the goal tree, snapshots, the contract, the run
+state, and the budget — are in [Contract semantics](./CONTRACT.md).
+
+- **Machine definition** — static, and the machine's only fixed authority. It owns the
+  **schema and the semantics of contracts**: which fields a contract carries, how a
+  transition is resolved from them, and which context values a transition may modify. It
+  belongs to the machine, not to any contract, so it does not travel with a run; the
+  agent still re-reads and re-injects it (see *Rule-decay handling*). Its written form
+  is [`MACHINE.md`](./MACHINE.md) — the two tables, guards and entry — while contract
+  semantics stay in [Contract semantics](./CONTRACT.md), which wins on overlap.
+- **Contract** — the transient data a state hands to its successor: `from` (the state
+  that just finished), `result` (what it produced), and `context` (the task's run
+  context). It
+  lives exactly one hop: the guard reads it, the successor receives it.
+- **Snapshot** — an immutable, versioned capture of the **goal tree**, written at the
+  user boundaries (`parse`, `approve`). It is the recovery anchor for the plan after a
+  compaction; the task progress lives in the run state (see *Contract semantics*).
+- **Bootstrap** — a defined **boot contract**, including the initial context, supplied by
+  the always-on layer. The first state has no predecessor, so its input is the boot
+  contract, not a result. See *Contract semantics*.
+
+Three kinds of produced data, kept distinct:
+
+- **Artifact** — files, workspace changes, snapshots; durable, outside the model's context.
+- **Result** — what a state produced, as named fields per state (see *Contract
+  semantics*); transient, carried **one hop** in the contract.
+- **Report** — what the user sees in a state; *displaying is not persisting*.
+
+Consequences:
+
+- The guard on the edge `X → Y` reads `from` (= X) together with `result` and `context`.
+  `from` is what selects the transition row and makes an illegal move detectable.
+- A state sees only its **immediate** predecessor's result. Where a state has several
+  incoming edges, exactly one was taken at run time — one predecessor, one result — and
+  the state must accept the **union** of its possible predecessors' results. A result
+  from any earlier state is not available.
+- **Context** — the task's run context (see *Contract semantics*) — rides in the
+  contract; modifying it is a declared capability, like the allow-list.
+- **The result is bounded**: it is the smallest thing the successor needs — per state,
+  as named fields (see *Contract semantics*). A large output is not carried; it is stored
+  as an **artifact** (a file) and referenced. `exec`'s result is `{ exit_code }`.
+- **On failure the result is persisted**: the failing evidence is written to a file —
+  that file is an artifact — so the user can decide. The step then ends, with no autonomous
+  retry (see *Verification independence*).
+- **The log is report-only for now.** Transitions are observable in the report
+  (`from → to` plus the guard result); nothing yet needs the log as data. If that
+  changes, it becomes a run-level list or an artifact.
+- **One complete contract schema** covers all states and their results, the state
+  serving as the discriminator — rather than one schema per state. Because the
+  discriminator is the state, no empty-result sentinel is needed: each variant declares
+  its own result fields. The result is therefore part of the contract (this supersedes
+  the earlier "the running state carries no output" wording): it is carried one hop, not
+  accumulated.
 
 ---
 
@@ -27,17 +120,21 @@ what makes a run comparable and an illegal move detectable.
 
 Two artifacts, deliberately separated:
 
-- **The schema** — static, owned by the skill, agent-facing. It lives in
-  `SKILL.md` as two markdown tables (see *File-split*).
+- **The state tables** — static, owned by the skill, agent-facing. They live in
+  `SKILL.md` as two markdown tables (see *File-split*). "Schema" is reserved for the
+  contract's JSON schema (`contract.schema.json`).
 - **The instance** — the state actually being executed. Encoded as **JSON conforming
-  to a JSON schema**, and every transition passes the new state forward explicitly.
+  to `contract.schema.json`**, and every transition passes the new state forward
+  explicitly.
   Where that JSON is *kept* is decided in *Externalised state (survival)*, which
   supersedes the earlier "held in the working context" wording here.
 
-The schema tables:
+The state tables:
 
 - **States table** — one row per state, saying what it is *expected to do* and
-  what it *must not do*.
+  what it *must not do*. This table is the authoritative list of states (filled in
+  CHECK 1); the names used throughout this document are those eight states as the
+  wireframe currently stands, and the wireframe itself is a sketch, not the source.
 - **Transitions table** — `from → to` plus the condition for each. Where several
   moves are possible they are worked **top to bottom, first applicable wins**, so
   the model evaluates conditions in order rather than choosing between options.
@@ -62,6 +159,12 @@ each part change for a reason that breaks the others.
 
 - **`README.md`** — human-facing. Holds the mermaid diagram. **Not authoritative**;
   a convenience copy that may drift, because nothing depends on it.
+- **`CONTRACT.md`** — the data-model semantics (goal tree, snapshots, contract, run
+  state, budget); the normative source the JSON schema is derived from.
+- **`MACHINE.md`** — the static machine mechanics (two tables with their columns,
+  guards, entry, gating composition); the design-stage source `SKILL.md`'s router is
+  built from.
+- **`contract.schema.json`** — the derived JSON schema of one contract.
 - **`SKILL.md`** — agent-facing and authoritative, and deliberately a **router**:
   it contains only the two tables. For this machine that is well under the 500-line
   cap; the cap is the tripwire that tells us to split, not the design itself.
@@ -71,7 +174,7 @@ each part change for a reason that breaks the others.
 - The states table must therefore stay **summary-level**: everything it does not
   say lives one hop away in the per-state file. No chains of files pointing at
   files.
-- The runtime instance (current state, budgets, transition log) lives outside the
+- The runtime instance (current state, run state, budgets) lives outside the
   skill files entirely, so a skill edit mid-session never clobbers session
   progress.
 - Growth path: if the router outgrows the cap, split further — the shape of that
@@ -117,9 +220,13 @@ An implicit "done" is still a skipped "done" — the model reports success when 
 feels finished rather than when a checked condition holds — but here that is caught
 by gates and budgets instead of by terminal states.
 
-- **Plan is the default** — the resting state. While in plan the machine returns to
+- **The plan phase is the default** — the resting phase. While in it the machine returns to
   the user (`grill`) as fast as it can; user involvement is the point of the loop,
   not an exception to it.
+- **The goal is stated with its abort condition**, fixed in plan before any build. A
+  machine that does not terminate has no terminal to stop it, so the only thing that
+  can end a unit of work is an abort the user declared up front — without one, a task
+  that will never succeed has no way out.
 - **The gate into build is an empty frontier.** Only when nothing is left open does
   `approve` fire.
 - **Build requires a FINALIZED budget**, agreed during plan and confirmed at
@@ -127,11 +234,13 @@ by gates and budgets instead of by terminal states.
 - **Build ends, or its budget is exhausted, and the machine returns to plan.**
   Exhaustion hands control *to the user*, which is the safe direction: this design
   fails toward more involvement, never toward less.
-- Consequence: `validate → plan` is **unconditional**. "Success" is simply an empty
+- Consequence: `validate → parse` (re-enter the plan phase) is **unconditional**. "Success" is simply an empty
   frontier on the next visit to plan; there is no terminal to distinguish success
   from another round.
-- An illegal transition is reported and control returns to the user. The machine
-  never guesses a next state to keep moving.
+- An illegal transition or a failed guard is reported and the machine resets to the
+  entry state with the failing contract; control returns to the user, who decides the
+  next move. The machine never guesses a next state to keep moving — the catch-all
+  row is a declared rule, not a guess.
 - Each state carries an exit checklist; the move out is not taken until it holds.
 
 📌 **PINs:** where the planning budget is held — the state definitions or the
@@ -181,6 +290,10 @@ Therefore the likely shape: the skill **declares** what must be enforced and
 blocking; on a host without that layer the skill degrades honestly and says the
 property is not secured (*Host dependence*).
 
+Why this one is deferred rather than guessed: both *always-on* and
+*session-survival* hinge on it (see *What success means*), so a wrong commitment
+here would propagate into every other section.
+
 Pending for this section: an explicit **cross-check against the risk-research
 findings** (.tmp/risk-research/) before this is settled.
 
@@ -209,7 +322,7 @@ innermost loop with a very short dwell time per state, which is the condition un
 which (b) is most likely to hold. The design intent is *close human in the loop and
 fast cycles*, and (b) serves that; (a) is reached only if (b) proves insufficient.
 
-The **persist points are the user boundaries**: after `parse` and after `approve`.
+The **snapshot is written at the user boundaries**: after `parse` and after `approve`.
 `parse` is the single chokepoint through which every user utterance passes — grill
 rounds return to `schedule` via parse-back — so nothing that crosses between agent
 and user goes unrecorded; `approve` is the only user decision that is a gate rather
@@ -221,6 +334,13 @@ Honest claim: under (b) survival is **not secured by default**. It is secured on
 if a persist point is reached before the compaction. The one window that remains
 exposed is a compaction firing *mid-build-turn*, between two user boundaries — and
 that is a named question for the PoC, not an oversight.
+
+The read at `parse` is also the post-compaction **recovery** point, which is why
+survival and the bootstrap edge are one question and not two: recovering the state
+after a compaction needs the always-on layer to have survived it *and* to say "read
+the state file now" (see *Rule-decay handling*). Where that layer does not survive,
+the state does not survive either — which is exactly what "not secured by default"
+means.
 
 Unaffected by the choice:
 
@@ -320,7 +440,9 @@ scheduler. The exception must earn its budget; it must not grow quietly.
 This repo exists to prove what a skill can do on its own, so host dependence is
 **minimised by design**. Host mechanisms should stay as orthogonal as possible to
 skill capability and form an *independent, more important* layer of their own — not
-something the skill quietly relies on.
+something the skill quietly relies on. This is also where the design admits how much
+of (a) *always-on* and (b) *session-survival* it cannot hold on its own (see *What
+success means*).
 
 - **Portable core, and the only thing claimed:** the state table, the file split, the
   exit checklists, the budget, the re-injection cadence. All of these work on any

@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://craft-more.dev/skills/plan-build-workflow/contract.schema.json",
+  "title": "plan-build-workflow contract",
+  "description": "Derived from CONTRACT.md, not the source. `from` discriminates the result variant.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "result", "context"],
+      "properties": {
+        "from": { "const": "parse" },
+        "result": { "$ref": "#/$defs/result_parse" },
+        "context": { "$ref": "#/$defs/context" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "result", "context"],
+      "properties": {
+        "from": { "const": "schedule" },
+        "result": { "$ref": "#/$defs/result_schedule" },
+        "context": { "$ref": "#/$defs/context" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "result", "context"],
+      "properties": {
+        "from": { "const": "grill" },
+        "result": { "$ref": "#/$defs/result_grill" },
+        "context": { "$ref": "#/$defs/context" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "result", "context"],
+      "properties": {
+        "from": { "const": "investigate" },
+        "result": { "$ref": "#/$defs/result_investigate" },
+        "context": { "$ref": "#/$defs/context" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "result", "context"],
+      "properties": {
+        "from": { "const": "suggest" },
+        "result": { "$ref": "#/$defs/result_suggest" },
+        "context": { "$ref": "#/$defs/context" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "result", "context"],
+      "properties": {
+        "from": { "const": "approve" },
+        "result": { "$ref": "#/$defs/result_approve" },
+        "context": { "$ref": "#/$defs/context" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "result", "context"],
+      "properties": {
+        "from": { "const": "exec" },
+        "result": { "$ref": "#/$defs/result_exec" },
+        "context": { "$ref": "#/$defs/context" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "result", "context"],
+      "properties": {
+        "from": { "const": "validate" },
+        "result": { "$ref": "#/$defs/result_validate" },
+        "context": { "$ref": "#/$defs/context" }
+      }
+    }
+  ],
+  "$defs": {
+    "result_type": {
+      "type": "string",
+      "enum": ["OK", "WARN", "REPORT", "FINALIZE"]
+    },
+    "result_parse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result_type", "text"],
+      "properties": {
+        "result_type": { "$ref": "#/$defs/result_type" },
+        "text": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "result_schedule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result_type", "next_step"],
+      "properties": {
+        "result_type": { "$ref": "#/$defs/result_type" },
+        "next_step": { "type": "string", "enum": ["grill", "investigate", "suggest"] }
+      }
+    },
+    "result_grill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result_type", "exchanges"],
+      "properties": {
+        "result_type": { "$ref": "#/$defs/result_type" },
+        "exchanges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["question", "answer"],
+            "properties": {
+              "question": { "type": "string" },
+              "answer": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "result_investigate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result_type", "findings"],
+      "properties": {
+        "result_type": { "$ref": "#/$defs/result_type" },
+        "findings": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "result_suggest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result_type", "suggestions"],
+      "properties": {
+        "result_type": { "$ref": "#/$defs/result_type" },
+        "suggestions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "result_approve": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result_type", "permissions"],
+      "properties": {
+        "result_type": { "$ref": "#/$defs/result_type" },
+        "permissions": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "result_exec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result_type", "exit_code"],
+      "properties": {
+        "result_type": { "$ref": "#/$defs/result_type" },
+        "exit_code": { "type": "integer" }
+      }
+    },
+    "result_validate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result_type", "verdict", "evidence"],
+      "properties": {
+        "result_type": { "$ref": "#/$defs/result_type" },
+        "verdict": { "type": "string", "enum": ["pass", "fail", "uncertain"] },
+        "evidence": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "node_type", "goal", "abort", "budget", "children"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "node_type": {
+          "type": "string",
+          "enum": [
+            "FINISH", "CHECK", "STEER", "DECIDE", "EVIDENCE", "PIN", "PLAN",
+            "EXEC", "INSPECT", "LAB", "CLEAN", "APPROVE", "NIGHTSHIFT"
+          ]
+        },
+        "goal": { "type": "string" },
+        "abort": { "type": "string" },
+        "budget": { "$ref": "#/$defs/budget" },
+        "children": { "type": "array", "items": { "$ref": "#/$defs/node" } }
+      }
+    },
+    "snapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "created", "root"],
+      "properties": {
+        "id": { "type": "string" },
+        "created": { "type": "string", "format": "date-time" },
+        "root": { "$ref": "#/$defs/node" }
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tokens", "seconds", "tool_calls", "transitions"],
+      "properties": {
+        "tokens": { "type": "integer" },
+        "seconds": { "type": "integer" },
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["tool", "count"],
+            "properties": {
+              "tool": { "type": "string" },
+              "count": { "type": "integer" }
+            }
+          }
+        },
+        "transitions": { "type": "integer" }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["focus_id", "snapshot_id", "remaining_budget"],
+      "properties": {
+        "focus_id": { "type": "string" },
+        "snapshot_id": { "type": "string" },
+        "remaining_budget": { "$ref": "#/$defs/budget" }
+      }
+    }
+  }
+}

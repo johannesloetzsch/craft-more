@@ -44,6 +44,11 @@ nav:
       - AGENTS.md: AGENTS.md
       - HISTORY.md: docs/HISTORY.md
 
+not_in_nav: |
+  skills/plan-build-workflow/DESIGN.md
+  skills/plan-build-workflow/CONTRACT.md
+  skills/plan-build-workflow/MACHINE.md
+
 theme:
   name: material
   logo: docs/img/logo.svg

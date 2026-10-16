@@ -22,10 +22,11 @@ stateDiagram-v2
     schedule --> suggest
     suggest --> grill
     grill --> parse
-    grill --> approve
+    grill --> approve : finalized
   }
 
   approve --> exec
+  approve --> parse : rejected
 
   state build {
     exec --> validate
@@ -33,6 +34,10 @@ stateDiagram-v2
 
   validate --> parse
 ```
+
+The eight states are `parse`, `schedule`, `grill`, `investigate`, `suggest`, `approve`, `exec`, `validate`; `plan` and `build` are **phase groupings**, not states.
+
+The design rationale behind this machine — its nine principles and their trade-offs — is in [Design principles](./DESIGN.md).
 
 ### Phases
 

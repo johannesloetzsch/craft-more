@@ -4,7 +4,7 @@ Status: ⚪ planned · 🟣 draft · 🔴 mock · 🟠 poc · 🟡 prototype · 
 
 ## Core workflow
 - 🔴 [`workflow`](../skills/workflow/README.md) 🌱 — Read back, think in the open, review early — your goal, your plan, your every step; craft, not slop
-- 🔴 [`plan-build-workflow`](../skills/plan-build-workflow/README.md) 🌱 — One unit of work, done in the open: plan and grill it first, then build in small approved steps — nothing written without a go
+- 🔴 [`plan-build-workflow`](../skills/plan-build-workflow/README.md) 🌱 — One unit of work, done in the open: plan and grill it first, then build in small approved steps — nothing written without a go; currently a state-machine PoC running from `SKILL.md` (mock)
 - ⚪ `cost-budget-guardrails` 📄 — Token/permission budget, cheapest source first
 - 🔴 [`tool-selection`](../skills/tool-selection/README.md) 🌱 — Move towards the goal with the right instrument — deliberately chosen by requirements
 

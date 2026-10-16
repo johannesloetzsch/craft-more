@@ -1682,3 +1682,190 @@ mechanism-vs-prose, the gate on always-on and session-survival · the principle-
 the risk-research findings · the PoC question list, now three: (b)-vs-(a) mid-build-turn compaction
 loss · re-injection cadence cost against rule-drop events · the original A/B on two or three
 scenarios.
+
+---
+
+## 2026-10-16 · The artifact pipeline: general to detail, and a qualified go
+
+🤒 [SYMPTOM] The state-machine work of this stretch produced `MACHINE.md` and settled the guard
+architecture (Condition · From guard · To guard columns, a standing `Guard` per state, a placement
+rule, a catch-all row). It also produced and then removed an `error` field across `CONTRACT.md` and
+`contract.schema.json`: structure added to the machine layer, challenged by the user after live
+review ("I am not yet convinced this earns its place"), grilled for its value, and reverted to the
+staged version — verified byte-identical by an empty `git diff`. The work had also followed a file
+sequence that made the whole design tractable, but that sequence existed only as habit.
+
+🩺 [DIAGNOSIS] Two shapes of one session. The revert was cheap precisely because the layers were
+clean: the field lived in the data model and its derivation, so the undo touched those two files
+plus one paragraph in the mechanics file — no redesign. The over-addition itself traced to the go:
+the user's approval was qualified ("not sure we need this; prefer the leaner variant if correctness
+is unaffected"), and the qualification was consumed as background rather than as an instruction —
+the structured variant was written, and the lean tie-break the user had stated fired only after two
+further grilling rounds. The construction order, meanwhile, never appeared as a stated recipe, so
+the next complex design would have to rediscover it.
+
+🎯 [ROOT-CAUSE] A qualified go was honoured for its authorization only, not for its content
+instruction; and a working construction order was practised but not written down — a named rule
+mistaken for an applied one, and an applied one mistaken for a durable one.
+
+🔧 [FIX] The `error` field was reverted to the staged version at the layers that carried it;
+`MACHINE.md`'s catch-all now states that the contract the failing state received is passed 1:1,
+unchanged, to `parse`, which diagnoses the failed edge from `from` + `result` + `context` and
+reports — `parse` is named as the state to implement most robustly. The construction order is
+recorded as learning 2, below, for the next state machine or comparably layered design. The user's
+own alternative (forward, diagnose at the entry) was adopted over the agent's design.
+
+💡 [LEARNING] Prioritised:
+
+1. **A qualified go is scoped by its qualifications.** *Why:* "unsure about X, prefer the leaner
+   variant" means deliver X's lean default and offer the structure — not deliver the structure and
+   wait for it to be challenged. The qualifier is the active instruction; the authorization is the
+   part that was already certain. (Extends "agreement is not approval".)
+2. **Build a layered artifact general to detail: data model → derivation → principles → mechanics →
+   human view.** *Why:* each file is narrower than the last — `CONTRACT.md` (what travels: contract,
+   result variants, context, run state, budget), `contract.schema.json` (derived, machine-checkable,
+   never the source), `DESIGN.md` (why the machine is shaped this way; settled breadth-first),
+   `MACHINE.md` (the static tables and the resolution discipline), `README.md` (the human mermaid,
+   non-authoritative, written last so it can only reflect). A dispute at a lower layer then costs a
+   revert of one or two layers, not a redesign — the `error` field touched exactly three files and
+   nothing above `DESIGN.md` moved.
+3. **The machine stays dumb; the entry state diagnoses.** *Why:* when the receiving layer already
+   holds the data — `from` + `result` + `context` is enough to determine a failed edge
+   deterministically — structure at the transmitting layer is addition without need. The diagnosis
+   concentrates at the entry point, which then names the one state that must be hardened.
+4. **The staged version is the rollback point; live review is where value disputes surface.** *Why:*
+   staging made the revert free and provable, and that safety is what makes it rational to keep the
+   write lean — review after the write costs a grill round, review against a staged baseline costs
+   nothing.
+
+♻️ [REFLECTION]
+
+Applied rules: plan-build-workflow (approval before write — the qualified go under-applied ·
+draft-first · grill before write) · evaluation-report (entry as a unit; delta-check; carry only
+what transfers) · interaction-guard (requirement before instrument; the reply is the message) ·
+uncertainty-and-verification (verify before claiming — the byte-identical restore was proven, not
+asserted) · emoji-markers (closed set) · communication-style (English).
+
+Strengths
+- ✅ [OK] The guard architecture survived several grilling rounds and user review without a single
+  rewrite after staging. (plan-build-workflow)
+- ✅ [OK] The value dispute ran entirely as a grill: uncertainty flagged at plan time, alternatives
+  laid out with costs, the user's own proposal adopted over the agent's design.
+  (plan-build-workflow)
+- ✅ [OK] The revert was verified, not asserted: empty `git diff` against the staged version.
+  (uncertainty-and-verification)
+- ✅ [OK] Unsettled points stayed visibly parked (Q12, the Reset column, 📌 guard values) instead of
+  being silently settled during execution. (evaluation-report)
+
+Improvements
+- ⚠️ [WARN] Wrote the structured variant although the go was qualified toward the lean default.
+  Fix: execute the lean reading of a qualified go; surface extra structure as an offer.
+  (plan-build-workflow)
+- ⚠️ [WARN] The construction order was never stated while it was being followed. Fix: name the
+  order as a recipe the first time it is used. (skill-authoring)
+
+Proposed rules
+- 📌 Execute a qualified go at its leanest reading; the qualifier is the instruction.
+  Implementation: `plan-build-workflow` (approval flow).
+- 📌 Build complex artifacts general to detail — data model → derivation → principles → mechanics →
+  human view — one file per layer. Implementation: `plan-build-workflow` / `skill-authoring`.
+- 📌 The machine stays dumb; error diagnosis belongs to the entry state.
+  Implementation: `DESIGN.md` / `MACHINE.md` (written).
+- 📌 A value dispute after live review ends in a verified revert to the last staged baseline.
+  Implementation: `plan-build-workflow`.
+
+⏰ [REVISIT] The breadth-search agenda — proposals 6–10 remain (6: validate an instance against
+`contract.schema.json`; 7: requirements-first) · Q12 fields and the Reset column values parked ·
+`used_budget` rename parked · whether the construction-order recipe should become a checklist in a
+future authoring skill.
+
+---
+
+## 2026-10-16 · First road test: the state machine runs, and invents an edge
+
+🤒 [SYMPTOM] `plan-build-workflow` got its first real run: a fresh session, booted only by the
+always-on pointer (`AGENTS.md` → `SKILL.md`), took a bare "hi", asked for a goal, then planned and
+built a memoized-recursive fibonacci (`.tmp/fib.py`) end to end — boot → plan → approve → exec →
+validate → parse — and the user called it interactive, quick, and request-fulfilling. The same run
+showed three defects. At boot, "no goal" was reported as a reset (`⚠️ [WARN] parse → parse
+(catch-all)`), though asking is exactly `parse` working. Mid-run the machine took `schedule → approve`,
+an edge that does not exist in the transitions table, and emitted `next_step = approve`, which is not
+in the result enum either. And a rejected `approve` had no valid result shape to carry its reason, so
+the report glitched (`📋 /!️ — actual marker: ⚠️ …`).
+
+🩺 [DIAGNOSIS] The core held on first contact — the by-reference boot, the contract/context carry, the
+declared idempotency used for the `python`→`python3`→nix-store retry, the independent `validate`. Every
+defect sits at an edge the spec never fixed. The transition graph is not closed: after
+`approve → parse (rejected)` there is no legal route back to `approve` but through `grill`, so the
+model invented `schedule → approve` — and the catch-all, built for exactly this, never fired, because
+the agent routed directly instead of consulting the table. Two boundaries are undefined: a state that
+asks the user should *end the turn* with no transition, and the loop never says whether one reply may
+pass through several states (the agent chained `parse → schedule → grill` and printed arrow-chains).
+
+🎯 [ROOT-CAUSE] The happy path decides the edges by default. A table read as a routing list, never as
+the closed set of legal moves, cannot stop an invented edge; and a diagnostic mechanism the executor
+does not consult is not a mechanism. The recurring shape — a rule named but not load-bearing — has
+reached the machine's own structure.
+
+🔧 [FIX] Nothing written yet; the run is logged as evidence and the fixes are prioritised. First the
+reporting and readback are made debug-friendly — the illegal edge was invisible in the report line,
+and an arrow-chain hid which hop was illegal — so the next run surfaces its own defects. Then the graph
+hole is closed: a legal route from a rejected `approve` back to `approve`, or an explicit rule that a
+rejection re-enters through `grill` — together with the ask/handback boundary. Details in git.
+
+💡 [LEARNING] Prioritised:
+
+1. **A live run is the cheapest bug-finder.** *Why:* the PoC validated the whole design on first
+   contact and, in the same session, surfaced the graph hole — the paper trace (L0) had been deferred,
+   and the live run did its work.
+2. **A transition graph must be closed under its own workflow.** *Why:* every state the loop can reach
+   needs a legal route back to a continuation; a missing route makes the executor invent an edge, and a
+   catch-all cannot catch an invented edge, because routing precedes table lookup.
+3. **Name a state's boundary: asking ends the turn.** *Why:* a state whose Expected is to ask takes no
+   transition until the answer arrives; a missing goal is `parse` working, not `parse` failing.
+4. **Validate the emitted contract at the edge, not by eye.** *Why:* `next_step = approve` violated
+   the result enum; a schema check would have failed the move before the illegal edge was taken.
+
+♻️ [REFLECTION]
+
+Applied rules: plan-build-workflow (plan/build loop ran end to end; approval before write) ·
+evaluation-report (entry as a unit; delta-check; carry only what transfers) · emoji-markers (closed
+set) · interaction-guard (the reply is the message) · uncertainty-and-verification (evidence per
+claim) · communication-style (English).
+
+Strengths
+- ✅ [OK] The machine ran a full plan → build → verify cycle on its first real session and fulfilled
+  the request; the user named it interactive, quick, and joy-sparking. (plan-build-workflow)
+- ✅ [OK] The by-reference boot worked from a fresh session: `AGENTS.md` → `SKILL.md` → the tables,
+  no skill pre-loaded. (skill-authoring)
+- ✅ [OK] The declared idempotency earned its place live — retry across `python`/`python3`/nix-store
+  was covered without a cleanup. (MACHINE.md §Idempotency)
+- ✅ [OK] `validate` was independent: doctests plus `fib(50)`, `cache_info`, and a `ValueError` check.
+
+Improvements
+- ⚠️ [WARN] Boot read "no goal" as a catch-all reset. Fix: state the ask/handback boundary.
+  (SKILL.md turn protocol)
+- ⚠️ [WARN] An edge not in the table was taken silently, contradicting the mechanism. Fix: close the
+  graph; make the table the closed set and the catch-all its only escape. (SKILL.md / MACHINE.md)
+- ⚠️ [WARN] A rejected `approve` had no valid result shape, so the report glitched. Fix: define the
+  rejection result — promote Q12 from parked. (CONTRACT.md / schema)
+- ⚠️ [WARN] The report line showed a chain, hiding which hop was illegal. Fix: make the report show
+  one resolved hop with its condition, so a bad move is visible. (SKILL.md report format)
+
+Proposed rules
+- 📌 A state that asks the user ends the turn; no transition until the answer.
+  Implementation: `SKILL.md` (turn protocol).
+- 📌 The transitions table is the closed set; a move not in it goes to the catch-all, never invented.
+  Implementation: `SKILL.md` / `MACHINE.md`.
+- 📌 The graph offers a legal route back from every reject or branch.
+  Implementation: `SKILL.md` (transitions table).
+- 📌 Validate every emitted contract against `contract.schema.json` before taking the edge.
+  Implementation: `SKILL.md` (turn protocol).
+- 📌 A rejected `approve` carries its reason in a valid result shape. Implementation: `CONTRACT.md` /
+  `contract.schema.json`.
+- 📌 The report is one resolved hop — `marker [result_type] from → to · condition` — not a chain.
+  Implementation: `SKILL.md` (report format).
+
+⏰ [REVISIT] The two prioritised fixes: (1) reporting and readback, then (2) the illegal transition ·
+the ask/handback boundary · the rejected-`approve` result shape (Q12 pulled from parked) · per-edge
+schema validation · the breadth-search agenda 6–10.
