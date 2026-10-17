@@ -44,6 +44,9 @@ content:
 
     OK, WARN, REPORT, FINALIZE                        (4)
 
+When `approve` grants, its result carries `result_type: APPROVE`. `APPROVE` is therefore
+both a durable `node_type` (above) and a transient `result_type` (below).
+
 Which state may act on which durable `node_type`, and which `result_type` a state's
 `result` may carry, is defined together with the state machines.
 
@@ -108,7 +111,7 @@ agent re-reads and re-injects it (see the re-injection hub).
 
     result = { result_type, … }
 
-    result_type ∈ { OK, WARN, REPORT, FINALIZE }
+    result_type ∈ { OK, WARN, REPORT, FINALIZE, APPROVE }
 
 The named fields, per `from` state:
 
@@ -117,7 +120,7 @@ The named fields, per `from` state:
     grill        { exchanges: [ { question, answer } ] }
     investigate  { findings: [string] }
     suggest      { suggestions: [string] }
-    approve      { permissions: [string] }                 // tool/path globs
+    approve      { permissions: [string] }                 // result_type APPROVE; tool/path globs
     exec         { exit_code: integer }                    // larger output is an artifact
     validate     { verdict: <pass | fail | uncertain>, evidence: [string] }   // refs
 

@@ -1869,3 +1869,210 @@ Proposed rules
 ⏰ [REVISIT] The two prioritised fixes: (1) reporting and readback, then (2) the illegal transition ·
 the ask/handback boundary · the rejected-`approve` result shape (Q12 pulled from parked) · per-edge
 schema validation · the breadth-search agenda 6–10.
+
+---
+
+## 2026-10-17 · A ledger that could not prove its point — approval written forward
+
+🤒 [SYMPTOM] This session hardened the standing approval discipline (go-echo · one call = one
+artifact · pre-tool audit) into a running approval ledger. The first design the agent proposed was
+not a functioning ledger: it recorded approvals after the fact and kept bookkeeping beside the work,
+so it could not show that any tool call had been approved *before* it ran. The agent offered variant
+after variant — bookkeeping as an optional extra write, a ledger written at the end — and asserted
+them, while the user, who already knew the answer, had to draw the working design out one question at
+a time. Two smaller defects surfaced on the way: an "echo loop" (after a closing report the agent
+still emitted a tool call) and a grant that counted only the work writes, so the ledger's own
+bookkeeping fell outside it and was skipped.
+
+🩺 [DIAGNOSIS] The initial ledger failed its purpose, and the failure was structural, not a wrong
+number. A ledger proves "approved before executed" only if its entry precedes the action and its
+state is consulted before the action; written at the end it is indistinguishable from a story. Two
+things the first design lacked were therefore urgently needed: a *read* of the ledger before every
+tool call (does an open approval cover this call, and is budget left?), and — because that read must
+see a true counter — the booking written *forward*, before the call. Closure, likewise, was treated
+as an action rather than communication, so a report could be followed by a tool call.
+
+🎯 [ROOT-CAUSE] A claim is trusted at the resolution it is stated, not the resolution it was derived
+at — and a design is trusted because it sounds plausible, not because it was checked against what it
+must guarantee. The agent tuned the number inside a design that could not work instead of first
+asking what the design had to prove. "Verify before claiming" was already recorded; this is its
+subtler form — a conditional claim, valid only under unstated assumptions, recited as fact.
+
+🔧 [FIX] Three moves. Make closure explicit communication: the closing report ends the turn; nothing
+follows it. Read the ledger before every tool call. And book forward — the entry precedes the action
+it books — with one epistemic rule: an assumption-dependent claim is marked uncertain and questioned,
+or settled with a runnable test, never stated as fact. Details in the working notes and git.
+
+💡 [LEARNING] Prioritised:
+
+1. **A derived claim presented as certain is a hallucination — even more so when the derivation is
+   long.** *Why:* length feels like rigour; it hides the assumptions. Certainty belongs to the
+   resolution a claim was derived at, not the one it is stated at.
+2. **Fix what the artifact must prove; the mechanics fall out.** *Why:* the ledger was tuned (how
+   many writes) before its guarantee (approved before executed) was fixed; a mechanism that cannot
+   meet the requirement cannot be tuned into meeting it.
+3. **A ledger's value is forward, not final.** *Why:* an approval record written at the end is a
+   story; only an entry that precedes the action can be checked.
+4. **Bookkeeping belongs inside the grant, and the state must be read before the act.** *Why:* a
+   grant that counts only the visible work makes the audit optional, and a counter no one reads
+   before acting enforces nothing.
+5. **Closure is communication.** *Why:* a report that can be followed by a tool call does not end
+   the turn.
+
+♻️ [REFLECTION]
+
+Applied rules: plan-build-workflow (approval before write; proposal before a write) ·
+uncertainty-and-verification (verify before claiming — recurred and sharpened) · evaluation-report
+(entry as a unit; delta-check) · emoji-markers (closed set) · communication-style (English).
+
+Strengths
+- ✅ [OK] A first draft of an approval ledger that checks rather than merely states: it questioned
+  the first go calls and blocked a tool call the grant did not cover — a write the agent had meant to
+  make was stopped, evidence the mechanism bites. (plan-build-workflow)
+- ✅ [OK] A draft caching protocol — raw and converted web results kept locally, cache-first, so
+  later steps reuse them without spending web budget. (web-research)
+- ✅ [OK] A way to use nixpkgs in plan mode, read-only: a tool present in the nix store is invoked
+  from its store path directly, needing no write. (uncertainty-and-verification)
+
+Improvements
+- ⚠️ [WARN] The first ledger design could not serve its purpose and was asserted as if it could; the
+  working design emerged only under the user's questioning. Fix: fix the guarantee first, then derive
+  the mechanics; mark a design unproven until checked. (plan-build-workflow)
+- ⚠️ [WARN] The go counted only the work writes, so the ledger's own bookkeeping fell outside the
+  grant and was skipped. Fix: fold bookkeeping into the grant, or make it implicit.
+  (plan-build-workflow)
+
+Proposed rules
+- 📌 A derived claim is a hypothesis, not a proof: name the assumptions, mark the uncertainty, ask —
+  or settle it with a runnable test. Implementation: `uncertainty-and-verification`.
+- 📌 An approval ledger is written forward — the entry precedes the action it books — and is read
+  before every tool call. Implementation: `plan-build-workflow` (approval flow).
+- 📌 Closure is communication: the closing report ends the turn; no tool call follows.
+  Implementation: `plan-build-workflow` (turn protocol).
+
+⏰ [REVISIT] Hold derivation-as-hypothesis as active work in `uncertainty-and-verification` (the
+agent records it but does not yet follow it) · whether the approval ledger earns its own skill · the
+closing-report rule as a mechanism, not prose.
+
+---
+
+## 2026-10-17 · The approval ledger holds, and the agent labels its own uncertainty
+
+💡 [LEARNING] The approval ledger — a forward record that an explicit grant ("go") precedes every
+tool call, kept in the session's working notes — ran its first full task in the intended shape. The
+grant was persisted before any write; each call read the ledger, reserved its slice of the budget
+forward, and ran; the count stayed inside the grant (three artefact writes, the ledger's own
+bookkeeping implicit), and the terminal budget matched. In the same run the agent took up the
+uncertainty discipline on its own: unprompted, it began marking its own claims with both a
+confidence and a *source* — the user's word, the agent's inference, or unverified — so a reader can
+tell the two apart and act on the gap weeks later.
+
+♻️ [REFLECTION]
+
+Applied rules: uncertainty-and-verification (confidence with source, adopted unprompted) ·
+plan-build-workflow (approval before write; the granted budget respected) · evaluation-report
+(entry as a unit; delta-check) · emoji-markers (closed set) · communication-style (English).
+
+Strengths
+- ✅ [OK] The ledger's forward discipline held live: the grant preceded the writes, every call was
+  booked before it ran, and no call exceeded the grant. (plan-build-workflow)
+- ✅ [OK] The agent adopted uncertainty labeling by itself and now names the source of each doubt,
+  not just its existence. (uncertainty-and-verification)
+
+Proposed rules
+- 📌 State a claim's confidence together with its source — the user's word, the agent's inference,
+  or unverified. Implementation: `uncertainty-and-verification`.
+
+⏰ [REVISIT] Fold the ledger review's open points into the ledger rules: a per-kind step counter, a
+read discipline keyed to writes that carry their own precondition, fail-closed coverage for every
+tool call, and budgeting each tool kind.
+
+---
+
+## 2026-10-17 · The agent reflects the full day: three-track gate research, and the ledger as its tool
+
+💡 [LEARNING] The day had one substantive goal and one tool. The goal: make `plan-build-workflow`
+robust — find and decide a documented set of gates and mechanisms, researched across three tracks:
+(a) gates in agentic engineering (what, how, which kinds), (b) how other skill state-machines use
+gates successfully, (c) skill-author best practices versus probabilistic drift. The tool was the
+approval ledger: not an end in itself, but the mechanism that enforces the core rule "no tool call
+and no write without an explicit go" — the rule under which the go-bound, budgeted research runs.
+The two must not be confused; the ledger exists so the research can be trusted, not the other way
+round.
+
+What the day produced:
+- **Method fixed first (P1):** local-first, breadth before depth; per track ≤12 searches / ≤5 fetches
+  in the first iteration; approval per sub-step (tightest control); routing — content to per-track
+  folders, procedure to `tasks.md`, lessons to `learned.md`, trace to `debug.log`.
+- **Breadth done (P2):** three tracks researched (local round 1, web round 2) and written. The
+  findings converge on one axis — **who enforces when: model → tool/CI → host** — and yield the SDD
+  **enforcement ladder (Asked / Checked / Blocked)**. Working definition: a gate is a decision at a
+  transition plus a mechanism on an enforcement rung.
+- **Mechanism repaired (the meta-loop):** the approval discipline itself kept failing, so it was
+  fixed and written down before the research could continue — go-echo, pre-tool audit, gate 0
+  ("needed?" before "covered?"), a forward-writing ledger, and uncertainty labeled with its source.
+
+♻️ [REFLECTION]
+
+Applied rules: plan-build-workflow (approval before write; granted budget respected) ·
+uncertainty-and-verification (confidence with source) · evaluation-report (entry as a unit;
+delta-check) · emoji-markers (closed set) · communication-style (English).
+
+Strengths
+- ✅ [OK] Goal and tool kept distinct: the ledger stayed a means, and the substantive goal — a robust
+  `plan-build-workflow` — remained the anchor. (plan-build-workflow)
+- ✅ [OK] Three independent tracks (local + web) converged on a single axis, giving the pending
+  definition work a shared basis. (web-research)
+- ✅ [OK] The day's context was reconstructed from the plan outline in `tasks.md` — the connections
+  between the complex tasks were derived, not recalled from memory. (plan-build-workflow)
+
+Proposed rules
+- 📌 In documentation, keep a goal and its tool separate — the tool must not eclipse the goal.
+  Implementation: `evaluation-report` (entry structure).
+
+⏰ [REVISIT] Resume the substantive thread: P2.5/A4 — define "gate" and delineate it from guard /
+guardrail / permission / checkpoint / validation; then P3 (depth / tiering). Separately, decide the
+three open ledger points (counter granularity; tool granularity; ledger reads implicit vs. explicit).
+
+---
+
+## 2026-10-18 · The cache proves itself — and exposes a provenance gap
+
+💡 [LEARNING] The cache-first retrieval pipeline (fetch → convert → verify → index, raw kept as
+source of truth) ran its first full smoke test on the four most load-bearing sources of the
+research so far — the SDD enforcement ladder, Consort, statepilot, and Goal-Autopilot. The
+mechanism held end to end: ten curl fetches (zero webfetch, zero websearch needed), converters
+chosen by a verification ladder, a cache hit proven at no web cost, and a per-channel ledger row
+(`curl 10 · webfetch 5 · websearch 5`) booked forward. Two operational lessons surfaced —
+`trafilatura` reads local HTML only through stdin (`-i` is a batch list of URLs), and GitHub's
+owner-repo listing is paginated, so a missing item is not an absent one — both recorded where the
+next run will hit them.
+
+The same run did what a smoke test is really for: it tested the *claims*, not only the plumbing.
+Three of the four sources verified cleanly; the fourth did not. The SDD enforcement ladder —
+weighted by the research as its cleanest "gate vs. guard" distinction — cited a file,
+`references/enforcement.md`, that does not exist, and its content is not in the repository's
+`spec-driven-development` skill either. The ladder is load-bearing, so its attribution is now
+flagged as unverified rather than quietly kept.
+
+♻️ [REFLECTION]
+
+Applied rules: web-research (cache-first, sources recorded) · uncertainty-and-verification
+(confidence with source; a claim is a hypothesis until checked) · plan-build-workflow (per-channel
+granted budget respected) · evaluation-report (entry as a unit; delta-check) · emoji-markers
+(closed set) · communication-style (English).
+
+Strengths
+- ✅ [OK] The retrieval pipeline was proven end to end on real sources, with a cache hit costing
+  zero web budget. (web-research)
+- ✅ [OK] The smoke test checked provenance, not only mechanics — and the one unverifiable claim
+  was flagged, not smoothed over. (uncertainty-and-verification)
+- ✅ [OK] The grant was budgeted per channel and stayed inside it (curl 10/10; webfetch and
+  websearch unused). (plan-build-workflow)
+
+Proposed rules
+- 📌 A source's provenance is part of the source: record where a claim lives and mark it verified
+  or suspect. Implementation: `uncertainty-and-verification` / `web-research`.
+
+⏰ [REVISIT] Resolve the SDD enforcement ladder's true origin (targeted search) and correct the
+`(c)` source table; then resume P2.5/A4.

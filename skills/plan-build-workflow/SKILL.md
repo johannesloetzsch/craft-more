@@ -109,7 +109,7 @@ Resolution discipline:
 
 One turn, in order:
 
-1. **Announce your state** — the state you are in now.
+1. **Read back** — open with the `🏷️ [STATE]` line (§Output): the state you are in.
 2. **Do what the state expects** — the `Expected` column of the states table.
 3. **Hand on a contract** — `{ from, result, context }` per `CONTRACT.md` (§Contract ·
    §Result); `context` carries `focus_id`, `snapshot_id`, `remaining_budget`.
@@ -118,7 +118,8 @@ One turn, in order:
    pass-through. No row applies, or a guard fails → the catch-all `* → parse`, the
    contract forwarded 1:1.
 5. **Set your state** to the row's `to`.
-6. **Report** — in the format below.
+6. **Report** — emit the turn's lines (§Output); each hop is its own `⏩ [TRANSITION]`
+   line, never a chain — and close every resolved edge with the `🤝` and `📚` lines.
 
 ## Instance
 
@@ -136,21 +137,68 @@ conversation.
 
 ## Boot
 
-Entry is `parse` (transitions table, Entry line). On a cold start:
+Entry is `parse` (transitions table, Entry line). On a cold start, open with the
+`🚀 [BOOT]` line (§Output); then:
 
 1. Read the user's first message. If it carries no goal, ask — `parse` re-orients, and
    asking is within its `Allowed` (read · search · ask).
 2. Create the initial context: one goal node, one snapshot and an initial budget —
-   minimal, per `CONTRACT.md` (§Goal tree · §Snapshot · §Budget · §Bootstrap).
+   minimal tokens, per `CONTRACT.md` (§Goal tree · §Snapshot · §Budget · §Bootstrap).
 3. Start the first turn at `parse`: parse the input, hand on its contract, resolve.
 
-## Report format
+## Output
 
-One line per turn, at the end of the reply:
+Every **machine line** carries exactly one **machine marker**; ordinary prose (findings,
+suggestions, a recap) is written as plain text. Only the markers below may appear.
 
-    <marker> [<result_type>] <from> → <to> · focus <focus_id> · budget rest <remaining>
+| Output | Marker |
+|---|---|
+| Boot | 🚀 `[BOOT]` |
+| State readback | 🏷️ `[STATE]` |
+| Focus | 👀 `[FOCUS]` |
+| Snapshot | 💾 `[SNAPSHOT]` |
+| Budget | 💰 `[BUDGET]` |
+| Result | one per `result_type`: ✅ `[OK]` · ⚠️ `[WARN]` · 🧾 `[REPORT]` · 📋 `[FINALIZE]` · 🔐 `[APPROVE]` |
+| Approval | 🔐 `[APPROVE]` |
+| Transition | ⏩ `[TRANSITION]` |
+| Contract | 🤝 `[CONTRACT]` |
+| Run state | 📚 `[RUNSTATE]` |
+| Frontier | 💬 `[FRONTIER]` |
+| Verification | 👍 `[PASS]` / 👎 `[FAIL]` / 🤷 `[UNCERTAIN]` |
+| Catch-all | 🚨 `[ERROR]` |
 
-The marker is the emitted contract's `result_type`: ✅ OK · ⚠️ WARN · 🧾 REPORT ·
-📋 FINALIZE. On a catch-all reset:
+(`approve`'s grant is the `🔐 [APPROVE]` line — `result_type: APPROVE`, see `CONTRACT.md`.)
 
-    ⚠️ [WARN] <from> → parse (catch-all) · focus <focus_id> · budget rest <remaining>
+A turn writes, in order:
+
+    🏷️ [STATE] <state> : 👀 [FOCUS] <focus_id> · 💾 [SNAPSHOT] <snapshot_id> · 💰 [BUDGET] remaining <remaining>
+    <result marker> <from> { <result fields> }         # marker bound to the result_type
+    ⏩ [TRANSITION] <from> → <to> · <condition>        # one line per hop; <condition> verbatim
+    🤝 [CONTRACT] { from, result, context }
+    📚 [RUNSTATE] <n> · process #<i> (<state>)
+
+When the turn puts something to the user:
+
+    💬 [FRONTIER] <numbered questions>
+    🔐 [APPROVE] <files> (<counts>) · grants: [<…>] · idempotency: { retry, cleanup }
+
+At cold start, and on a reset in place of the transition:
+
+    🚀 [BOOT] parse : cold start · 👀 [FOCUS] <focus_id> · 💾 [SNAPSHOT] <snapshot_id> · 💰 [BUDGET] remaining <remaining>
+    🚨 [ERROR] <from> → parse · catch-all: <reason>
+
+On completion:
+
+    👍 [PASS] <verdict> · evidence: [<refs>]        # or 👎 [FAIL] · 🤷 [UNCERTAIN] …
+
+Before sending, check:
+
+- every machine line opens with exactly one marker from the table, and none other;
+- the `⏩` `<condition>` is the matched row's `Condition`, copied **verbatim** from the
+  transitions table — never paraphrased;
+- the `<result marker>` equals the contract's `result_type` binding;
+- no line holds a chain (`a → b → c`) — each hop is its own `⏩` line;
+- a state that asks the user emits no `⏩` line;
+- every `⏩` `to` is a row of the transitions table;
+- every turn that resolved an edge emits both `🤝 [CONTRACT]` and `📚 [RUNSTATE]`;
+- boot and catch-all use their single marker (🚀 `[BOOT]` / 🚨 `[ERROR]`).
